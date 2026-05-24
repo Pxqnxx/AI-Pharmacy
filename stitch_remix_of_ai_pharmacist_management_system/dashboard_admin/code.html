@@ -1,0 +1,272 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Admin Dashboard - Pharmacist View</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 1;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "error": "#ba1a1a",
+                        "inverse-primary": "#6bd8cb",
+                        "on-error": "#ffffff",
+                        "tertiary-container": "#727577",
+                        "surface-dim": "#cfdaf2",
+                        "on-tertiary-fixed-variant": "#444749",
+                        "on-tertiary-fixed": "#191c1e",
+                        "surface-container-high": "#dee8ff",
+                        "background": "#f9f9ff",
+                        "surface-container-low": "#f0f3ff",
+                        "on-primary-fixed": "#00201d",
+                        "error-container": "#ffdad6",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "surface-container": "#e7eeff",
+                        "on-secondary": "#ffffff",
+                        "on-secondary-fixed": "#00174b",
+                        "primary-fixed-dim": "#6bd8cb",
+                        "surface-container-highest": "#d8e3fb",
+                        "surface-tint": "#006a61",
+                        "on-primary-container": "#f4fffc",
+                        "on-background": "#111c2d",
+                        "inverse-surface": "#263143",
+                        "primary-fixed": "#89f5e7",
+                        "tertiary": "#595c5e",
+                        "on-tertiary-container": "#fbfdff",
+                        "on-primary-fixed-variant": "#005049",
+                        "on-error-container": "#93000a",
+                        "outline": "#6d7a77",
+                        "on-secondary-container": "#fefcff",
+                        "primary": "#00685f",
+                        "outline-variant": "#bcc9c6",
+                        "on-secondary-fixed-variant": "#003ea8",
+                        "primary-container": "#008378",
+                        "secondary": "#0051d5",
+                        "surface-variant": "#d8e3fb",
+                        "tertiary-fixed-dim": "#c4c7c9",
+                        "on-primary": "#ffffff",
+                        "secondary-container": "#316bf3",
+                        "inverse-on-surface": "#ecf1ff",
+                        "on-surface-variant": "#3d4947",
+                        "secondary-fixed-dim": "#b4c5ff",
+                        "tertiary-fixed": "#e0e3e5",
+                        "on-surface": "#111c2d",
+                        "surface": "#f9f9ff",
+                        "secondary-fixed": "#dbe1ff",
+                        "surface-bright": "#f9f9ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xl": "2rem",
+                        "margin-desktop": "40px",
+                        "sm": "0.5rem",
+                        "md": "1rem",
+                        "gutter": "24px",
+                        "margin-mobile": "16px",
+                        "base": "4px",
+                        "lg": "1.5rem",
+                        "xs": "0.25rem"
+                    },
+                    "fontFamily": {
+                        "label-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-lg-mobile": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "600" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background font-body-md antialiased min-h-screen flex">
+<!-- Navigation Drawer (Desktop) -->
+<nav class="hidden md:flex flex-col bg-surface dark:bg-inverse-surface h-full w-80 rounded-r-xl bg-surface-container-low dark:bg-surface-container-high shadow-lg fixed inset-y-0 left-0 z-50 py-6 border-r border-outline-variant transition-all duration-300 ease-in-out">
+<!-- Header Profile -->
+<div class="px-6 mb-8 flex items-center gap-4">
+<div class="w-12 h-12 rounded-full overflow-hidden bg-surface-variant flex-shrink-0">
+<img alt="Admin Profile" class="w-full h-full object-cover" data-alt="A close-up portrait of a professional pharmacist in a modern, brightly lit clinical setting. They are wearing a pristine white lab coat over a teal shirt, conveying authority and trust. The lighting is soft and high-key, creating a clean, sterile yet approachable medical aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCxBLu7zT0jTqNe9TQngx_J3GsfySpVE1lxQOQcyZ26mDVejD0RSPb0PbLj_CmweAklHmXVk6Rq8PySysYwweBHZTpa1gM5nY3MLsyhR2piDo8G5_2CcRKIQvH9mil3m5cuncmBpdlYkKDqXy5uXKzvAMpDT4Q_HYOg3jMsf0h5eaWlNHSbefzMJsW28xyegn8TLNclHVeZWHnfuGh4X6Ut68qMU2Np6osxSQGQoSqqCpz9gcpGwCRwtioxqe5UbNOfItS333ifggY">
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed">ระบบจัดการแอดมิน</h2>
+<p class="font-label-sm text-label-sm text-on-surface-variant">มุมมองเภสัชกร</p>
+<p class="font-label-sm text-label-sm text-tertiary mt-1">v1.0.4</p>
+</div>
+</div>
+<!-- Navigation Links -->
+<div class="flex-1 overflow-y-auto">
+<!-- Active Tab: Dashboard -->
+<a class="flex items-center gap-4 bg-secondary-container dark:bg-secondary text-on-secondary-container dark:text-on-secondary rounded-full px-4 py-3 mx-2 mb-2 transition-all duration-300 ease-in-out hover:bg-surface-variant dark:hover:bg-inverse-surface" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard" data-weight="fill">dashboard</span>
+<span class="font-label-md text-label-md">แดชบอร์ด</span>
+</a>
+<a class="flex items-center gap-4 text-on-surface-variant dark:text-surface-variant px-4 py-3 mx-2 mb-2 transition-all duration-300 ease-in-out hover:bg-surface-variant dark:hover:bg-inverse-surface rounded-full" href="#">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+<span class="font-label-md text-label-md">คลังสินค้า</span>
+</a>
+<a class="flex items-center gap-4 text-on-surface-variant dark:text-surface-variant px-4 py-3 mx-2 mb-2 transition-all duration-300 ease-in-out hover:bg-surface-variant dark:hover:bg-inverse-surface rounded-full" href="#">
+<span class="material-symbols-outlined" data-icon="bar_chart">bar_chart</span>
+<span class="font-label-md text-label-md">ยอดขาย</span>
+</a>
+<a class="flex items-center gap-4 text-on-surface-variant dark:text-surface-variant px-4 py-3 mx-2 mb-2 transition-all duration-300 ease-in-out hover:bg-surface-variant dark:hover:bg-inverse-surface rounded-full" href="#">
+<span class="material-symbols-outlined" data-icon="notifications_active">notifications_active</span>
+<span class="font-label-md text-label-md">การแจ้งเตือน</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Wrapper -->
+<div class="flex-1 flex flex-col min-h-screen md:ml-80">
+<!-- TopAppBar -->
+<header class="bg-surface dark:bg-inverse-surface fixed top-0 w-full md:w-[calc(100%-20rem)] z-40 border-b border-outline-variant dark:border-outline flex justify-between items-center px-margin-mobile md:px-margin-desktop h-16">
+<div class="flex items-center gap-4">
+<button class="md:hidden text-primary dark:text-primary-fixed active:scale-95 transition-transform hover:bg-surface-container-high dark:hover:bg-surface-dim p-2 rounded-full">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+<h1 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed">PharmaAI</h1>
+</div>
+<button class="text-primary dark:text-primary-fixed active:scale-95 transition-transform hover:bg-surface-container-high dark:hover:bg-surface-dim p-2 rounded-full">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+</button>
+</header>
+<!-- Main Canvas -->
+<main class="flex-1 pt-24 px-margin-mobile md:px-margin-desktop pb-12 w-full max-w-7xl mx-auto">
+<!-- Page Header -->
+<div class="mb-8">
+<h2 class="font-display-lg text-display-lg text-on-background">ภาพรวม</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-2">ตรวจสอบการดำเนินงานร้านยาและสถิติการปรึกษา AI รายวัน</p>
+</div>
+<!-- KPI Cards Grid (Bento Style) -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter mb-gutter">
+<!-- Revenue Card -->
+<div class="bg-surface-container-lowest rounded-xl p-6 shadow-[0px_1px_2px_rgba(0,0,0,0.05)] border border-outline-variant flex flex-col justify-between relative overflow-hidden">
+<!-- Decorative subtle background element -->
+<div class="absolute -right-6 -top-6 w-24 h-24 bg-primary/5 rounded-full blur-xl"></div>
+<div>
+<div class="flex items-center justify-between mb-4">
+<h3 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">รายได้รวม</h3>
+<span class="material-symbols-outlined text-primary" data-icon="payments">payments</span>
+</div>
+<div class="font-headline-lg text-headline-lg text-on-background">45,200 <span class="text-lg font-normal text-on-surface-variant">THB</span></div>
+</div>
+<div class="mt-4 flex items-center gap-1 text-primary">
+<span class="material-symbols-outlined text-sm" data-icon="trending_up">trending_up</span>
+<span class="font-label-sm text-label-sm">+12% vs last week</span>
+</div>
+</div>
+<!-- Orders Card -->
+<div class="bg-surface-container-lowest rounded-xl p-6 shadow-[0px_1px_2px_rgba(0,0,0,0.05)] border border-outline-variant flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-4">
+<h3 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">คำสั่งซื้อทั้งหมด</h3>
+<span class="material-symbols-outlined text-secondary" data-icon="shopping_bag">shopping_bag</span>
+</div>
+<div class="font-headline-lg text-headline-lg text-on-background">128</div>
+</div>
+<div class="mt-4 flex items-center gap-1 text-on-surface-variant">
+<span class="font-label-sm text-label-sm">รอดำเนินการ: 14</span>
+</div>
+</div>
+<!-- Active Users Card -->
+<div class="bg-surface-container-lowest rounded-xl p-6 shadow-[0px_1px_2px_rgba(0,0,0,0.05)] border border-outline-variant flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-4">
+<h3 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">การปรึกษา AI ที่กำลังใช้งาน</h3>
+<span class="material-symbols-outlined text-inverse-primary" data-icon="group">group</span>
+</div>
+<div class="font-headline-lg text-headline-lg text-on-background">32</div>
+</div>
+<div class="mt-4 flex items-center gap-1 text-primary">
+<span class="material-symbols-outlined text-sm" data-icon="check_circle">check_circle</span>
+<span class="font-label-sm text-label-sm">ระบบปกติ</span>
+</div>
+</div>
+</div>
+<!-- Sales Chart Section -->
+<div class="bg-surface-container-lowest rounded-xl p-6 shadow-[0px_1px_2px_rgba(0,0,0,0.05)] border border-outline-variant mt-gutter">
+<div class="flex items-center justify-between mb-8">
+<h3 class="font-headline-md text-headline-md text-on-background">5 อันดับยาขายดี</h3>
+<button class="font-label-md text-label-md text-primary hover:bg-surface-container-low px-4 py-2 rounded-full transition-colors">ดูทั้งหมด</button>
+</div>
+<!-- Pseudo Bar Chart -->
+<div class="flex items-end gap-4 h-64 mt-4 w-full border-b border-outline-variant pb-2 relative">
+<!-- Y-Axis Labels (Simulated) -->
+<div class="absolute left-0 top-0 h-full flex flex-col justify-between text-tertiary font-label-sm text-label-sm pr-4 pb-2 border-r border-outline-variant">
+<span class="">400</span>
+<span class="">300</span>
+<span class="">200</span>
+<span class="">100</span>
+<span class="">0</span>
+</div>
+<!-- Bars Area -->
+<div class="flex-1 flex items-end justify-around h-full pl-10">
+<!-- Bar 1 -->
+<div class="flex flex-col items-center group cursor-pointer">
+<div class="w-12 bg-primary rounded-t-md h-[85%] group-hover:bg-primary-container transition-colors relative">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-inverse-surface text-on-primary rounded px-2 py-1 font-label-sm text-label-sm opacity-0 group-hover:opacity-100 transition-opacity">340</div>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-4 text-center">พาราเซตามอล</span>
+</div>
+<!-- Bar 2 -->
+<div class="flex flex-col items-center group cursor-pointer">
+<div class="w-12 bg-primary-fixed-dim rounded-t-md h-[65%] group-hover:bg-primary-container transition-colors relative">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-inverse-surface text-on-primary rounded px-2 py-1 font-label-sm text-label-sm opacity-0 group-hover:opacity-100 transition-opacity">260</div>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-4 text-center">ยาแก้ไอ</span>
+</div>
+<!-- Bar 3 -->
+<div class="flex flex-col items-center group cursor-pointer">
+<div class="w-12 bg-secondary rounded-t-md h-[50%] group-hover:bg-secondary-container transition-colors relative">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-inverse-surface text-on-primary rounded px-2 py-1 font-label-sm text-label-sm opacity-0 group-hover:opacity-100 transition-opacity">200</div>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-4 text-center">อะม็อกซีซิลลิน</span>
+</div>
+<!-- Bar 4 -->
+<div class="flex flex-col items-center group cursor-pointer">
+<div class="w-12 bg-outline rounded-t-md h-[40%] group-hover:bg-outline-variant transition-colors relative">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-inverse-surface text-on-primary rounded px-2 py-1 font-label-sm text-label-sm opacity-0 group-hover:opacity-100 transition-opacity">160</div>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-4 text-center">ไอบูโพรเฟน</span>
+</div>
+<!-- Bar 5 -->
+<div class="flex flex-col items-center group cursor-pointer">
+<div class="w-12 bg-surface-variant rounded-t-md h-[25%] group-hover:bg-surface-container-highest transition-colors relative border border-outline-variant">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-inverse-surface text-on-primary rounded px-2 py-1 font-label-sm text-label-sm opacity-0 group-hover:opacity-100 transition-opacity">100</div>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-4 text-center">ลอราทาดีน</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+
+
+</body></html>

@@ -1,0 +1,298 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Inventory &amp; Low Stock Alerts</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "error": "#ba1a1a",
+                    "inverse-primary": "#6bd8cb",
+                    "on-error": "#ffffff",
+                    "tertiary-container": "#727577",
+                    "surface-dim": "#cfdaf2",
+                    "on-tertiary-fixed-variant": "#444749",
+                    "on-tertiary-fixed": "#191c1e",
+                    "surface-container-high": "#dee8ff",
+                    "background": "#f9f9ff",
+                    "surface-container-low": "#f0f3ff",
+                    "on-primary-fixed": "#00201d",
+                    "error-container": "#ffdad6",
+                    "surface-container-lowest": "#ffffff",
+                    "on-tertiary": "#ffffff",
+                    "surface-container": "#e7eeff",
+                    "on-secondary": "#ffffff",
+                    "on-secondary-fixed": "#00174b",
+                    "primary-fixed-dim": "#6bd8cb",
+                    "surface-container-highest": "#d8e3fb",
+                    "surface-tint": "#006a61",
+                    "on-primary-container": "#f4fffc",
+                    "on-background": "#111c2d",
+                    "inverse-surface": "#263143",
+                    "primary-fixed": "#89f5e7",
+                    "tertiary": "#595c5e",
+                    "on-tertiary-container": "#fbfdff",
+                    "on-primary-fixed-variant": "#005049",
+                    "on-error-container": "#93000a",
+                    "outline": "#6d7a77",
+                    "on-secondary-container": "#fefcff",
+                    "primary": "#00685f",
+                    "outline-variant": "#bcc9c6",
+                    "on-secondary-fixed-variant": "#003ea8",
+                    "primary-container": "#008378",
+                    "secondary": "#0051d5",
+                    "surface-variant": "#d8e3fb",
+                    "tertiary-fixed-dim": "#c4c7c9",
+                    "on-primary": "#ffffff",
+                    "secondary-container": "#316bf3",
+                    "inverse-on-surface": "#ecf1ff",
+                    "on-surface-variant": "#3d4947",
+                    "secondary-fixed-dim": "#b4c5ff",
+                    "tertiary-fixed": "#e0e3e5",
+                    "on-surface": "#111c2d",
+                    "surface": "#f9f9ff",
+                    "secondary-fixed": "#dbe1ff",
+                    "surface-bright": "#f9f9ff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "xl": "2rem",
+                    "margin-desktop": "40px",
+                    "sm": "0.5rem",
+                    "md": "1rem",
+                    "gutter": "24px",
+                    "margin-mobile": "16px",
+                    "base": "4px",
+                    "lg": "1.5rem",
+                    "xs": "0.25rem"
+            },
+            "fontFamily": {
+                    "label-md": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "body-md": ["Inter"],
+                    "headline-lg-mobile": ["Inter"]
+            },
+            "fontSize": {
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .icon-fill {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex font-body-md">
+<!-- NavigationDrawer -->
+<aside class="hidden md:flex flex-col bg-surface shadow-lg h-full w-80 rounded-r-xl fixed inset-y-0 left-0 z-50 py-6 border-r border-surface-container-low transition-all duration-300 ease-in-out">
+<!-- Header -->
+<div class="px-6 mb-8 flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container font-headline-md text-headline-md overflow-hidden">
+<span class="material-symbols-outlined icon-fill">account_circle</span>
+</div>
+<div>
+<h2 class="font-label-md text-label-md text-primary font-bold">Admin Portal</h2>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Pharmacist View</p>
+<p class="font-label-sm text-label-sm text-tertiary text-[10px]">v1.0.4</p>
+</div>
+</div>
+<!-- Navigation Links -->
+<nav class="flex-1 flex flex-col gap-1">
+<a class="flex items-center gap-4 text-on-surface-variant px-4 py-3 mx-2 rounded-full hover:bg-surface-variant transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-4 bg-secondary-container text-on-secondary-container rounded-full px-4 py-3 mx-2 transition-all duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined icon-fill" data-icon="inventory_2">inventory_2</span>
+<span class="font-label-md text-label-md font-bold">Inventory</span>
+</a>
+<a class="flex items-center gap-4 text-on-surface-variant px-4 py-3 mx-2 rounded-full hover:bg-surface-variant transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="bar_chart">bar_chart</span>
+<span class="font-label-md text-label-md">Sales</span>
+</a>
+<a class="flex items-center gap-4 text-on-surface-variant px-4 py-3 mx-2 rounded-full hover:bg-surface-variant transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="notifications_active">notifications_active</span>
+<span class="font-label-md text-label-md">Alerts</span>
+</a>
+</nav>
+</aside>
+<!-- Main Content Canvas -->
+<div class="flex-1 flex flex-col md:ml-80 min-w-0 h-screen overflow-hidden">
+<!-- TopAppBar -->
+<header class="bg-surface flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop h-16 border-b border-outline-variant docked full-width top-0 z-40">
+<div class="flex items-center gap-4">
+<button class="md:hidden text-on-surface-variant hover:bg-surface-container-high p-2 rounded-full active:scale-95 transition-transform">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+<h1 class="font-headline-md text-headline-md font-bold text-primary">PharmaAI</h1>
+</div>
+<button class="text-on-surface-variant hover:bg-surface-container-high p-2 rounded-full active:scale-95 transition-transform">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+</button>
+</header>
+<!-- Scrollable Content Area -->
+<main class="flex-1 overflow-y-auto p-margin-mobile md:p-margin-desktop bg-surface-container-low">
+<!-- Page Title -->
+<div class="mb-gutter">
+<h2 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-2">จัดการคลังสินค้า</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">ตรวจสอบระดับสต็อกและจัดการการสั่งซื้อซ้ำอย่างมีประสิทธิภาพ</p>
+</div>
+<!-- Low Stock Alerts Section (Bento Grid) -->
+<section class="mb-xl">
+<div class="flex items-center gap-2 mb-md">
+<span class="material-symbols-outlined text-error icon-fill">warning</span>
+<h3 class="font-headline-md text-headline-md text-on-surface">แจ้งเตือนสินค้าใกล้หมด</h3>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<!-- Alert Card 1: Amoxicillin (RED) -->
+<div class="bg-surface-container-lowest rounded-xl shadow-md border border-error-container p-lg flex flex-col justify-between relative overflow-hidden group">
+<div class="absolute top-0 right-0 w-32 h-32 bg-error/5 rounded-bl-full -mr-8 -mt-8 pointer-events-none"></div>
+<div class="flex justify-between items-start mb-6">
+<div class="flex items-center gap-4">
+<div class="w-16 h-16 bg-surface-container-high rounded-lg flex items-center justify-center border border-outline-variant shrink-0">
+<span class="material-symbols-outlined text-outline text-[32px]">medication</span>
+</div>
+<div>
+<h4 class="font-headline-md text-headline-md text-on-surface mb-1">Amoxicillin</h4>
+<p class="font-label-md text-label-md text-on-surface-variant">Antibiotic 500mg</p>
+</div>
+</div>
+<!-- Status Badge: RED -->
+<div class="bg-error/10 text-error px-3 py-1.5 rounded-full flex items-center gap-1.5 font-label-sm text-label-sm"><div class="w-2 h-2 rounded-full bg-error animate-pulse"></div>
+                                สินค้าใกล้หมด</div>
+</div>
+<div class="flex items-end justify-between mt-auto">
+<div>
+<p class="font-label-sm text-label-sm text-tertiary mb-1">คงเหลือในคลัง</p>
+<p class="font-display-lg text-display-lg text-error leading-none">5<span class="font-label-md text-label-md text-on-surface-variant ml-1">กล่อง</span></p>
+</div>
+<button class="bg-primary text-on-primary hover:bg-primary-container px-6 py-2.5 rounded-full font-label-md text-label-md shadow-sm transition-all duration-200 active:scale-95 flex items-center gap-2"><span class="material-symbols-outlined text-[18px]">add_shopping_cart</span>
+                                สั่งสินค้าเพิ่ม</button>
+</div>
+</div>
+<!-- Alert Card 2: Vitamin C (ORANGE) -->
+<div class="bg-surface-container-lowest rounded-xl shadow-md border border-orange-200 p-lg flex flex-col justify-between relative overflow-hidden group">
+<div class="absolute top-0 right-0 w-32 h-32 bg-orange-50 rounded-bl-full -mr-8 -mt-8 pointer-events-none"></div>
+<div class="flex justify-between items-start mb-6">
+<div class="flex items-center gap-4">
+<div class="w-16 h-16 bg-surface-container-high rounded-lg flex items-center justify-center border border-outline-variant shrink-0">
+<span class="material-symbols-outlined text-outline text-[32px]">vaccines</span>
+</div>
+<div>
+<h4 class="font-headline-md text-headline-md text-on-surface mb-1">Vitamin C</h4>
+<p class="font-label-md text-label-md text-on-surface-variant">Supplement 1000mg</p>
+</div>
+</div>
+<!-- Status Badge: ORANGE (Using standard Tailwind for specific semantic color requested) -->
+<div class="bg-orange-100 text-orange-800 px-3 py-1.5 rounded-full flex items-center gap-1.5 font-label-sm text-label-sm border border-orange-200"><div class="w-2 h-2 rounded-full bg-orange-500"></div>
+                                ควรสั่งเพิ่มเร็วๆ นี้</div>
+</div>
+<div class="flex items-end justify-between mt-auto">
+<div>
+<p class="font-label-sm text-label-sm text-tertiary mb-1">คงเหลือในคลัง</p>
+<p class="font-display-lg text-display-lg text-orange-600 leading-none">8<span class="font-label-md text-label-md text-on-surface-variant ml-1">ขวด</span></p>
+</div>
+<button class="bg-surface text-primary border border-primary hover:bg-surface-container-low px-6 py-2.5 rounded-full font-label-md text-label-md transition-all duration-200 active:scale-95 flex items-center gap-2"><span class="material-symbols-outlined text-[18px]">add_shopping_cart</span>
+                                สั่งสินค้าเพิ่ม</button>
+</div>
+</div>
+</div>
+</section>
+<!-- All Inventory List Section -->
+<section>
+<div class="flex justify-between items-end mb-md border-b border-outline-variant pb-2">
+<h3 class="font-headline-md text-headline-md text-on-surface">สินค้าทั้งหมด</h3>
+<button class="text-primary font-label-md text-label-md hover:underline flex items-center gap-1">ดูรายการทั้งหมด <span class="material-symbols-outlined text-[16px]">arrow_forward</span></button>
+</div>
+<div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant overflow-hidden">
+<!-- Table Header (Hidden on Mobile, Grid on Desktop) -->
+<div class="hidden md:grid grid-cols-12 gap-4 p-4 bg-surface-container text-on-surface-variant font-label-sm text-label-sm border-b border-outline-variant">
+<div class="col-span-5">Product Details</div>
+<div class="col-span-2">SKU</div>
+<div class="col-span-2">Stock Level</div>
+<div class="col-span-3 text-right">Action</div>
+</div>
+<!-- List Items -->
+<div class="flex flex-col divide-y divide-outline-variant">
+<!-- Healthy Item Example -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-4 p-4 items-center hover:bg-surface-container-low transition-colors">
+<div class="col-span-1 md:col-span-5 flex items-center gap-4">
+<div class="w-12 h-12 bg-surface-container-high rounded bg-cover bg-center border border-outline-variant shrink-0" data-alt="A clean, minimalist macro photograph of white medicinal pills arranged neatly on a sterile, light gray pharmacy counter. The lighting is bright, soft, and even, conveying a sense of modern medical precision and pristine hygiene. Deep depth of field keeps the primary pills in sharp focus." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAhfaePNdpt83UNmaIx36h0y4ZNPIjTakCD_qGVwbUd0wepVKwW2no-rcoQ4HSSp4_0WUNFc41LvUtmQiwuqVstV0_EKfE2T1WWbL83HvIkjsc8pWTQ9Du8NfJk9aO8hAw6vCwqMFSyYqXPc4cTf4KXF08h2EmYmcPaQJG3Ihod_pbJOgBFbkLhkhnZKEXYoGfMTEFd9jwr3NC2dl3E5U9GibhrbZ84JjEWs4NLBsRCCBIlwgUv_XFL6mVnjTQBxXs-WJSAdpDzwiI');">
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface font-bold">Paracetamol</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Pain Relief 500mg</p>
+</div>
+</div>
+<div class="hidden md:block col-span-2 font-body-md text-body-md text-tertiary">
+                                MED-PRC-01
+                            </div>
+<div class="col-span-1 md:col-span-2 flex items-center gap-2">
+<span class="font-label-md text-label-md text-on-surface">145</span>
+<div class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-label-sm text-label-sm text-[10px] uppercase border border-emerald-200">มีสินค้า</div>
+</div>
+<div class="col-span-1 md:col-span-3 flex justify-end">
+<button class="text-primary hover:bg-primary/10 px-4 py-2 rounded-full font-label-md text-label-md transition-colors w-full md:w-auto text-center border border-transparent hover:border-primary/20">
+                                    Manage Details
+                                </button>
+</div>
+</div>
+<!-- Another Healthy Item -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-4 p-4 items-center hover:bg-surface-container-low transition-colors">
+<div class="col-span-1 md:col-span-5 flex items-center gap-4">
+<div class="w-12 h-12 bg-surface-container-high rounded bg-cover bg-center border border-outline-variant shrink-0" data-alt="A brightly lit, crisp image of clear liquid medication vials standing upright on a white reflective surface. The setting implies a high-tech, modern pharmaceutical laboratory environment. The color palette is dominated by cool whites, subtle glass reflections, and minimal dark text on the vial labels." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBK2x7NFdAkVc2skCgKPaq7Rjv_YWR5jcuFQuYt5jHtM2N_eMACA6jCwkZCvFzk3GncnOsOca_ToWV-VaSE8WzSwjefdAJfku7kPJaYCVYDGrj-DZRvQsJqjHuG-DEUQEff6t13_47Kb9eo8IMsvJ_anoXCS_bnKMnfIj6PfKdEumnK_-8K36trOYa0BzeWqPTpIxq8hZ-2AOOZ3rVe8T7F-diFKQ2rKyk59zJUCTP_B0a4f3TnacCqv9yWN1mHcM3U_1JJ9qQ1UHI');">
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface font-bold">Ibuprofen</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Anti-inflammatory 400mg</p>
+</div>
+</div>
+<div class="hidden md:block col-span-2 font-body-md text-body-md text-tertiary">
+                                MED-IBP-04
+                            </div>
+<div class="col-span-1 md:col-span-2 flex items-center gap-2">
+<span class="font-label-md text-label-md text-on-surface">82</span>
+<div class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-label-sm text-label-sm text-[10px] uppercase border border-emerald-200">มีสินค้า</div>
+</div>
+<div class="col-span-1 md:col-span-3 flex justify-end">
+<button class="text-primary hover:bg-primary/10 px-4 py-2 rounded-full font-label-md text-label-md transition-colors w-full md:w-auto text-center border border-transparent hover:border-primary/20">
+                                    Manage Details
+                                </button>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+</div>
+
+
+</body></html>

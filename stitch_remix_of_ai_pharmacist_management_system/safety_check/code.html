@@ -1,0 +1,201 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Smart Safety Check - PharmaAI</title>
+<!-- Google Fonts: Inter -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "error": "#ba1a1a",
+                      "inverse-primary": "#6bd8cb",
+                      "on-error": "#ffffff",
+                      "tertiary-container": "#727577",
+                      "surface-dim": "#cfdaf2",
+                      "on-tertiary-fixed-variant": "#444749",
+                      "on-tertiary-fixed": "#191c1e",
+                      "surface-container-high": "#dee8ff",
+                      "background": "#f9f9ff",
+                      "surface-container-low": "#f0f3ff",
+                      "on-primary-fixed": "#00201d",
+                      "error-container": "#ffdad6",
+                      "surface-container-lowest": "#ffffff",
+                      "on-tertiary": "#ffffff",
+                      "surface-container": "#e7eeff",
+                      "on-secondary": "#ffffff",
+                      "on-secondary-fixed": "#00174b",
+                      "primary-fixed-dim": "#6bd8cb",
+                      "surface-container-highest": "#d8e3fb",
+                      "surface-tint": "#006a61",
+                      "on-primary-container": "#f4fffc",
+                      "on-background": "#111c2d",
+                      "inverse-surface": "#263143",
+                      "primary-fixed": "#89f5e7",
+                      "tertiary": "#595c5e",
+                      "on-tertiary-container": "#fbfdff",
+                      "on-primary-fixed-variant": "#005049",
+                      "on-error-container": "#93000a",
+                      "outline": "#6d7a77",
+                      "on-secondary-container": "#fefcff",
+                      "primary": "#00685f",
+                      "outline-variant": "#bcc9c6",
+                      "on-secondary-fixed-variant": "#003ea8",
+                      "primary-container": "#008378",
+                      "secondary": "#0051d5",
+                      "surface-variant": "#d8e3fb",
+                      "tertiary-fixed-dim": "#c4c7c9",
+                      "on-primary": "#ffffff",
+                      "secondary-container": "#316bf3",
+                      "inverse-on-surface": "#ecf1ff",
+                      "on-surface-variant": "#3d4947",
+                      "secondary-fixed-dim": "#b4c5ff",
+                      "tertiary-fixed": "#e0e3e5",
+                      "on-surface": "#111c2d",
+                      "surface": "#f9f9ff",
+                      "secondary-fixed": "#dbe1ff",
+                      "surface-bright": "#f9f9ff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "xl": "2rem",
+                      "margin-desktop": "40px",
+                      "sm": "0.5rem",
+                      "md": "1rem",
+                      "gutter": "24px",
+                      "margin-mobile": "16px",
+                      "base": "4px",
+                      "lg": "1.5rem",
+                      "xs": "0.25rem"
+              },
+              "fontFamily": {
+                      "label-md": ["Inter"],
+                      "label-sm": ["Inter"],
+                      "display-lg": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "headline-lg": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "body-md": ["Inter"],
+                      "headline-lg-mobile": ["Inter"]
+              },
+              "fontSize": {
+                      "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                      "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                      "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col font-body-md">
+<!-- TopAppBar (From JSON) -->
+<header class="bg-surface dark:bg-inverse-surface border-b border-outline-variant dark:border-outline sticky top-0 z-50 flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop h-16">
+<button class="text-primary dark:text-primary-fixed hover:bg-surface-container-high dark:hover:bg-surface-dim transition-colors active:scale-95 p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+<div class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed">PharmaAI</div>
+<button class="text-primary dark:text-primary-fixed hover:bg-surface-container-high dark:hover:bg-surface-dim transition-colors active:scale-95 p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+</button>
+</header>
+<!-- Main Content Canvas (Transactional Flow - Navigation Shell Suppressed) -->
+<main class="flex-grow container mx-auto px-margin-mobile md:px-margin-desktop py-xl max-w-3xl">
+<!-- Context Header -->
+<div class="mb-lg">
+<div class="flex items-center gap-2 text-primary font-label-md text-label-md mb-2">
+<span class="material-symbols-outlined text-[18px]">verified_user</span>
+<span class="">ระบบตรวจสอบความปลอดภัยทำงานอยู่</span>
+</div>
+<h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-background">ตรวจสอบรายการสั่งซื้อ</h1>
+</div>
+<!-- Medicine Detail & Warning Bento Grid -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-md md:gap-gutter">
+<!-- Medicine Info Card -->
+<div class="md:col-span-12 bg-surface rounded-xl shadow-sm border border-outline-variant p-md flex flex-col sm:flex-row gap-lg items-start">
+<div class="w-full sm:w-32 h-32 bg-surface-container-highest rounded-lg overflow-hidden shrink-0">
+<img alt="Paracetamol" class="w-full h-full object-cover" data-alt="A clean, brightly lit close-up of generic white pharmaceutical pills resting on a sterile, light blue medical surface. The lighting is soft and clinical, evoking a sense of modern healthcare and professional pharmacy environments. The composition is minimalist, focusing on the texture and pristine condition of the medication." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAVcSm6LGoyqn4AphU_gzcEZro_9y0tnJvSBtRVPCp81nRa2jFuXrvoa34VFb04MvVeHpqbR28g0vmJNvsS_PSVNn0X9LlzTBYsnXFi_gC9aUt2GrRzjHVqQTw_rK9UFksI7aGOM0v7tX7lOGkr7W3Pyigz0ZMihsd25h-3XERdHPAFJWtnvCjmkImx42_poNTpSXcyu-wBZFh8bvjIoMwm3zOgwgaQQQyNQYax0NkWD8_3tDv3-Nz5fak_x7k0j2ExLT4wtkfnNEo">
+</div>
+<div class="flex-grow">
+<h2 class="font-headline-md text-headline-md text-on-background mb-xs">Paracetamol 500mg</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mb-4">Pain reliever and a fever reducer. Standard dosage tablet.</p>
+<div class="inline-flex items-center gap-2 bg-surface-container px-3 py-1.5 rounded-full font-label-sm text-label-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px]">info</span>
+<span class="">วิธีใช้: รับประทานครั้งละ 1-2 เม็ด ทุก 4-6 ชั่วโมง เมื่อมีอาการ</span>
+</div>
+</div>
+</div>
+<!-- Profile Context -->
+<div class="md:col-span-12 flex items-center justify-between bg-surface-container-low rounded-lg p-md border border-outline-variant">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container">
+<span class="material-symbols-outlined">person</span>
+</div>
+<div>
+<div class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">ข้อมูลผู้ป่วย</div>
+<div class="font-label-md text-label-md text-on-background font-semibold">Customer #006</div>
+</div>
+</div>
+<div class="text-right">
+<div class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">โรคประจำตัว</div>
+<div class="font-label-md text-label-md text-error font-semibold flex items-center gap-1 justify-end">
+<span class="material-symbols-outlined text-[16px]">medical_information</span>
+                        GERD (กรดไหลย้อน)
+                    </div>
+</div>
+</div>
+<!-- CRITICAL WARNING BOX -->
+<div class="md:col-span-12 bg-error-container border-2 border-error rounded-xl p-lg shadow-md relative overflow-hidden">
+<!-- Decorative background icon -->
+<span class="material-symbols-outlined absolute -right-4 -bottom-4 text-[120px] text-error opacity-10" style="font-variation-settings: 'FILL' 1;">warning</span>
+<div class="flex gap-4 relative z-10">
+<div class="shrink-0 pt-1">
+<span class="material-symbols-outlined text-error text-[32px]" style="font-variation-settings: 'FILL' 1;">warning</span>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-on-error-container mb-2">การแจ้งเตือนความปลอดภัย</h3>
+<p class="font-body-lg text-body-lg text-on-error-container font-medium">
+                            ⚠️ คำเตือนความปลอดภัย: ยาตัวนี้อาจส่งผลกระทบต่อโรคกรดไหลย้อนของคุณ โปรดปรึกษาเภสัชกรก่อนใช้งาน
+                        </p>
+<p class="font-body-md text-body-md text-on-error-container mt-2 opacity-90">พาราเซตามอลบางครั้งอาจทำให้ระคายเคืองเยื่อบุในกระเพาะอาหาร ซึ่งอาจทำให้อาการกรดไหลย้อนที่เป็นอยู่แย่ลงได้ เราขอแนะนำยาตัวอื่นทดแทน</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Action Area -->
+<div class="mt-xl pt-lg border-t border-outline-variant flex flex-col-reverse sm:flex-row justify-end gap-md">
+<button class="px-6 py-3 rounded-full border border-outline text-on-surface font-label-md text-label-md hover:bg-surface-container-high transition-colors active:scale-95 flex items-center justify-center gap-2">
+<span class="">ยืนยันสั่งซื้อ (ความเสี่ยงต่ำ)</span>
+</button>
+<button class="px-6 py-3 rounded-full bg-primary text-on-primary font-label-md text-label-md hover:bg-primary-container hover:text-on-primary-container transition-colors active:scale-95 shadow-md flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[20px]">swap_horiz</span>
+<span class="">เปลี่ยนเป็นยาตัวอื่น</span>
+</button>
+</div>
+</main>
+
+
+</body></html>

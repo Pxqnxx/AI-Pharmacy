@@ -1,0 +1,262 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>PharmaAI - Chat &amp; Recommendations</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Google Fonts: Inter -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config from Guidelines -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "error": "#ba1a1a",
+                    "inverse-primary": "#6bd8cb",
+                    "on-error": "#ffffff",
+                    "tertiary-container": "#727577",
+                    "surface-dim": "#cfdaf2",
+                    "on-tertiary-fixed-variant": "#444749",
+                    "on-tertiary-fixed": "#191c1e",
+                    "surface-container-high": "#dee8ff",
+                    "background": "#f9f9ff",
+                    "surface-container-low": "#f0f3ff",
+                    "on-primary-fixed": "#00201d",
+                    "error-container": "#ffdad6",
+                    "surface-container-lowest": "#ffffff",
+                    "on-tertiary": "#ffffff",
+                    "surface-container": "#e7eeff",
+                    "on-secondary": "#ffffff",
+                    "on-secondary-fixed": "#00174b",
+                    "primary-fixed-dim": "#6bd8cb",
+                    "surface-container-highest": "#d8e3fb",
+                    "surface-tint": "#006a61",
+                    "on-primary-container": "#f4fffc",
+                    "on-background": "#111c2d",
+                    "inverse-surface": "#263143",
+                    "primary-fixed": "#89f5e7",
+                    "tertiary": "#595c5e",
+                    "on-tertiary-container": "#fbfdff",
+                    "on-primary-fixed-variant": "#005049",
+                    "on-error-container": "#93000a",
+                    "outline": "#6d7a77",
+                    "on-secondary-container": "#fefcff",
+                    "primary": "#00685f",
+                    "outline-variant": "#bcc9c6",
+                    "on-secondary-fixed-variant": "#003ea8",
+                    "primary-container": "#008378",
+                    "secondary": "#0051d5",
+                    "surface-variant": "#d8e3fb",
+                    "tertiary-fixed-dim": "#c4c7c9",
+                    "on-primary": "#ffffff",
+                    "secondary-container": "#316bf3",
+                    "inverse-on-surface": "#ecf1ff",
+                    "on-surface-variant": "#3d4947",
+                    "secondary-fixed-dim": "#b4c5ff",
+                    "tertiary-fixed": "#e0e3e5",
+                    "on-surface": "#111c2d",
+                    "surface": "#f9f9ff",
+                    "secondary-fixed": "#dbe1ff",
+                    "surface-bright": "#f9f9ff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "xl": "2rem",
+                    "margin-desktop": "40px",
+                    "sm": "0.5rem",
+                    "md": "1rem",
+                    "gutter": "24px",
+                    "margin-mobile": "16px",
+                    "base": "4px",
+                    "lg": "1.5rem",
+                    "xs": "0.25rem"
+            },
+            "fontFamily": {
+                    "label-md": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "body-md": ["Inter"],
+                    "headline-lg-mobile": ["Inter"]
+            },
+            "fontSize": {
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        /* Custom scrollbar for chat area */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: theme('colors.outline-variant');
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: theme('colors.outline');
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col font-body-md antialiased selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopAppBar -->
+<header class="bg-surface text-primary font-headline-md text-headline-md docked full-width top-0 border-b border-outline-variant flat no shadows flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop h-16 sticky z-40">
+<div class="flex items-center gap-4">
+<button aria-label="Menu" class="p-2 -ml-2 rounded-full hover:bg-surface-container-high transition-colors text-on-surface-variant flex items-center justify-center active:scale-95 transition-transform">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+<span class="font-headline-md text-headline-md font-bold text-primary">PharmaAI</span>
+</div>
+<button aria-label="Search" class="p-2 -mr-2 rounded-full hover:bg-surface-container-high transition-colors text-on-surface-variant flex items-center justify-center active:scale-95 transition-transform">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+</button>
+</header>
+<!-- Main Content Area: Chat & Recommendations -->
+<main class="flex-1 flex flex-col max-w-5xl mx-auto w-full pt-6 pb-40 md:pb-32 px-margin-mobile md:px-margin-desktop gap-8">
+<!-- Chat History Context (Faded/Previous messages placeholder) -->
+<div class="flex flex-col gap-6 opacity-70">
+<!-- User Message -->
+<div class="flex items-start gap-4 self-end max-w-[85%] sm:max-w-2xl">
+<div class="bg-surface-container-high text-on-surface p-4 rounded-2xl rounded-tr-none shadow-sm border border-outline-variant">
+<p class="font-body-md text-body-md">สวัสดีครับ รู้สึกปวดหัวและมีไข้ต่ำๆ มาตั้งแต่เมื่อวาน ตอนนี้เริ่มเจ็บคอด้วย มียาอะไรแนะนำไหมครับ?</p>
+</div>
+</div>
+</div>
+<!-- Latest AI Interaction -->
+<div class="flex flex-col gap-6">
+<!-- Bot Message -->
+<div class="flex items-start gap-3 max-w-full sm:max-w-[90%] animate-[fadeIn_0.3s_ease-out]">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center shrink-0 shadow-sm border border-outline-variant">
+<span class="material-symbols-outlined text-on-primary-container" data-icon="robot_2" style="font-variation-settings: 'FILL' 1;">robot_2</span>
+</div>
+<div class="bg-primary text-on-primary p-5 rounded-2xl rounded-tl-none shadow-md">
+<p class="font-body-md text-body-md leading-relaxed">
+                        จากการวิเคราะห์เบื้องต้น คุณอาจจะมีอาการไข้หวัด แนะนำให้ทานยาลดไข้และพักผ่อนครับ นี่คือยาที่แนะนำ:
+                    </p>
+</div>
+</div>
+<!-- Medicine Recommendations Layout (Grid) -->
+<div class="pl-14"> <!-- Indent to align with chat bubble content -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Medicine Card 1 -->
+<article class="bg-surface-container-lowest shadow-sm rounded-xl border border-outline-variant overflow-hidden flex flex-col transition-shadow hover:shadow-md">
+<!-- Image Container: 1:1 Aspect Ratio -->
+<div class="w-full aspect-square bg-surface-variant relative p-6 flex items-center justify-center">
+<img alt="Paracetamol" class="w-full h-full object-contain drop-shadow-sm mix-blend-multiply" data-alt="A clean, brightly lit product shot of a blister pack of white Paracetamol pills resting on a pristine, minimalist white surface. The lighting is soft and clinical, casting subtle shadows to emphasize the 3D form of the medication. The overall mood is sterile, professional, and reassuring, perfectly aligning with a modern digital health platform's high-key aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC68tT_iwN9t_30gMy00UFEYWTQMrAgOVt_dC9k9hMM3w3e0QaAiNeLRnQoqfhg6EhZ99m6fDekHibR0qdXcxhThr_stNsEI0boaVgErgASK23BvrXbFUJ7NUZiluE0iDKJghIxVV0heK_UIgB9jbaZk0Siq4j3xXOUdJqH5XhyIcNlkDutka1sUmgt-DLpFo_ayLQeYLVb9B6S_-eYfmRNtAH5JLxxE1iW-47bsEbx3HXEj-3a7Ly58bMV4U9ttk_QUp8liD0Mqz0">
+<!-- Status Badge -->
+<div class="absolute top-3 left-3 bg-[#e6f4ea] text-[#137333] px-2 py-1 rounded-full flex items-center gap-1 border border-[#ceead6]">
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="font-label-sm text-label-sm">มีสินค้า</span>
+</div>
+</div>
+<!-- Content -->
+<div class="p-4 flex flex-col flex-1 gap-1">
+<h3 class="font-headline-md text-headline-md text-on-surface truncate" title="Paracetamol 500mg">Paracetamol 500mg</h3>
+<p class="font-label-md text-label-md text-on-surface-variant line-clamp-2 mb-2">Pain reliever &amp; fever reducer. Take 1-2 tablets every 4-6 hours.</p>
+<div class="mt-auto flex items-end justify-between pt-2">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">ราคา</span>
+<span class="font-headline-md text-headline-md text-primary">25 บาท</span>
+</div>
+</div>
+</div>
+<!-- Action Button Docked -->
+<button class="w-full bg-surface-container hover:bg-primary-container text-primary hover:text-on-primary-container border-t border-outline-variant transition-colors py-4 font-label-md text-label-md flex items-center justify-center gap-2 group"><span class="material-symbols-outlined group-hover:scale-110 transition-transform" data-icon="add_shopping_cart">add_shopping_cart</span>
+                            เพิ่มลงตะกร้า</button>
+</article>
+<!-- Medicine Card 2 -->
+<article class="bg-surface-container-lowest shadow-sm rounded-xl border border-outline-variant overflow-hidden flex flex-col transition-shadow hover:shadow-md">
+<!-- Image Container: 1:1 Aspect Ratio -->
+<div class="w-full aspect-square bg-surface-variant relative p-6 flex items-center justify-center">
+<img alt="Throat Lozenges" class="w-full h-full object-contain drop-shadow-sm mix-blend-multiply" data-alt="A macro photography shot of soothing throat lozenges scattered gracefully on a smooth, slightly reflective light gray studio backdrop. The lighting is diffused and bright, creating a calming, clean medical vibe without harsh shadows. The color palette focuses on whites, soft grays, and the subtle amber hue of the lozenges, conveying relief and professional care." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDUdfVljFJ01VpnKbGKtZKC_VHBEiN4lsEXqI9I7XTvoSaeOWBeiBnsHrmknAnm3fQz_z3Kvp8iLgWTFy6Sy3LHdAXy2F7wH2SChGgrLwyqdpj-lsn7HX3XFZ5hIQNckXEmitBUHh7K_m_Q7pZjTV5ogY0Z_nCO7vjrdrrd2kLpGldfRLD9jixogdINm4buHNwqb01Z5GmeAleFOF_WwR6PkCnbMur5qsLb53s0Wrt4m4RPE08KOAdSFNngK7oyTEbq3aTq0GgKp7A">
+<!-- Status Badge -->
+<div class="absolute top-3 left-3 bg-[#e6f4ea] text-[#137333] px-2 py-1 rounded-full flex items-center gap-1 border border-[#ceead6]">
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="font-label-sm text-label-sm">มีสินค้า</span>
+</div>
+</div>
+<!-- Content -->
+<div class="p-4 flex flex-col flex-1 gap-1">
+<h3 class="font-headline-md text-headline-md text-on-surface truncate" title="Throat Lozenges">Throat Lozenges</h3>
+<p class="font-label-md text-label-md text-on-surface-variant line-clamp-2 mb-2">Relieves sore throat and cough. Dissolve 1 lozenge slowly in mouth.</p>
+<div class="mt-auto flex items-end justify-between pt-2">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">ราคา</span>
+<span class="font-headline-md text-headline-md text-primary">45 บาท</span>
+</div>
+</div>
+</div>
+<!-- Action Button Docked -->
+<button class="w-full bg-surface-container hover:bg-primary-container text-primary hover:text-on-primary-container border-t border-outline-variant transition-colors py-4 font-label-md text-label-md flex items-center justify-center gap-2 group"><span class="material-symbols-outlined group-hover:scale-110 transition-transform" data-icon="add_shopping_cart">add_shopping_cart</span>
+                            เพิ่มลงตะกร้า</button>
+</article>
+</div>
+</div>
+</div>
+</main>
+<!-- Chat Input Area (Fixed above bottom nav on mobile, absolute bottom on desktop if no nav) -->
+<div class="fixed bottom-[80px] md:bottom-0 left-0 w-full bg-surface/90 backdrop-blur-md border-t border-outline-variant px-margin-mobile md:px-margin-desktop py-3 z-30 flex justify-center">
+<div class="max-w-3xl w-full flex items-center gap-3">
+<button class="w-12 h-12 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors shrink-0">
+<span class="material-symbols-outlined text-[28px]" data-icon="add_circle">add_circle</span>
+</button>
+<div class="flex-1 bg-surface-container-lowest border border-outline-variant rounded-full flex items-center px-4 h-12 shadow-sm focus-within:ring-2 focus-within:ring-secondary focus-within:border-secondary transition-all">
+<input class="w-full bg-transparent border-none focus:ring-0 p-0 font-body-md text-on-surface placeholder:text-on-surface-variant h-full outline-none" placeholder="พิมพ์ข้อความของคุณที่นี่..." type="text">
+</div>
+<button class="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-on-primary hover:bg-primary-container hover:text-on-primary-container shadow-sm transition-colors shrink-0 active:scale-95">
+<span class="material-symbols-outlined" data-icon="send" style="font-variation-settings: 'FILL' 1;">send</span>
+</button>
+</div>
+</div>
+<!-- BottomNavBar (Mobile Only as per destination rule for mobile view) -->
+<nav class="md:hidden bg-surface-container-lowest text-primary font-label-sm text-label-sm docked full-width bottom-0 rounded-t-xl shadow-md fixed w-full z-50 flex justify-around items-center h-20 px-4 pb-2">
+<!-- Active Tab: Chat -->
+<button class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-4 py-1 active:scale-90 transition-all duration-200 w-16 h-12 group">
+<span class="material-symbols-outlined text-[24px]" data-icon="chat_bubble" style="font-variation-settings: 'FILL' 1;">chat_bubble</span>
+<span class="font-label-sm text-label-sm mt-1">แชท</span>
+</button>
+<!-- Inactive Tab: Orders -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high hover:rounded-xl active:scale-90 transition-all duration-200 w-16 h-12 px-2 py-1">
+<span class="material-symbols-outlined text-[24px]" data-icon="local_shipping">local_shipping</span>
+<span class="font-label-sm text-label-sm mt-1">คำสั่งซื้อ</span>
+</button>
+<!-- Inactive Tab: Health -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high hover:rounded-xl active:scale-90 transition-all duration-200 w-16 h-12 px-2 py-1">
+<span class="material-symbols-outlined text-[24px]" data-icon="person">person</span>
+<span class="font-label-sm text-label-sm mt-1">สุขภาพ</span>
+</button>
+<!-- Inactive Tab: Settings -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high hover:rounded-xl active:scale-90 transition-all duration-200 w-16 h-12 px-2 py-1">
+<span class="material-symbols-outlined text-[24px]" data-icon="settings">settings</span>
+<span class="font-label-sm text-label-sm mt-1">ตั้งค่า</span>
+</button>
+</nav>
+
+
+</body></html>

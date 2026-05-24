@@ -1,0 +1,12 @@
+# Global Workspace Dependencies
+node_modules/
+.DS_Store
+*.log
+
+# Sub-app dependencies and build outputs
+nuxt-pharma-app/node_modules/
+nuxt-pharma-app/.nuxt/
+nuxt-pharma-app/.output/
+nuxt-pharma-app/dist/
+nuxt-pharma-app/.env
+nuxt-pharma-app/.env.local
