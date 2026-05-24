@@ -93,7 +93,6 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useRoute } from '#app'
 
 const route = useRoute()
 
@@ -106,7 +105,7 @@ const navigationMenu = computed(() => [
   { label: 'โปรไฟล์สุขภาพผู้ป่วย', icon: 'medical_information', href: '/health', isActive: route.path === '/health' },
   { label: 'ทดสอบเชื่อมฐานข้อมูลสด', icon: 'database', href: '/test-products', isActive: route.path === '/test-products' },
   { label: 'แชทพูดคุยปรึกษา AI', icon: 'forum', href: '/chat', isActive: route.path === '/chat' },
-  { label: 'กลับหน้าแรก (Portal Hub)', icon: 'home', href: '/', isActive: route.path === '/' },
+  { label: 'ออกจากระบบ', icon: 'logout', href: '/', isActive: false },
 ])
 </script>
 
