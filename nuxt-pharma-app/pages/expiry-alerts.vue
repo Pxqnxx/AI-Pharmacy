@@ -1,121 +1,113 @@
 <template>
-  <div class="bg-gradient-to-tr from-slate-50 via-white to-teal-50/10 min-h-screen py-8 px-margin-mobile md:px-margin-desktop antialiased text-on-surface">
-    <!-- Header with Back Button and Live DB Connection Status -->
-    <div class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+  <div class="space-y-6" style="font-family: 'Plus Jakarta Sans', sans-serif;">
+
+    <!-- ─── Page Header ───────────────────────────────────────────── -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
       <div>
-        <div class="flex items-center gap-3 mb-2">
-          <a href="/" class="p-2 bg-surface-container hover:bg-surface-container-high rounded-full transition-colors flex items-center justify-center shadow-xs">
-            <span class="material-symbols-outlined text-[20px]">arrow_back</span>
-          </a>
-          <h2 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg font-bold text-slate-900">
-            ระบบแจ้งเตือนสินค้าใกล้หมดอายุ
-          </h2>
+        <div class="flex items-center gap-2.5 mb-1">
+          <span class="material-symbols-outlined text-red-500 text-[28px] icon-fill">running_with_errors</span>
+          <h2 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">ระบบแจ้งเตือนยาหมดอายุ</h2>
         </div>
-        <p class="font-body-md text-body-md text-on-surface-variant">
-          ตรวจสอบ ประเมินอายุคงเหลือของผลิตภัณฑ์ยาเวชภัณฑ์ และเตรียมการจัดการเชิงรุก
+        <p class="text-xs text-slate-400 dark:text-slate-500 ml-9">
+          ตรวจสอบและป้องกันเวชภัณฑ์หมดอายุคาชั้นวาง ปรับราคาขายระบายคลังอย่างชาญฉลาด
         </p>
       </div>
-      
-      <!-- Current System Date Indicator -->
-      <div class="flex items-center gap-3 bg-surface-container border border-outline-variant p-3.5 rounded-2xl shadow-xs">
-        <span class="material-symbols-outlined text-primary text-[22px]">calendar_month</span>
+
+      <!-- Live Date Indicator -->
+      <div class="flex items-center gap-3 bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 p-3 rounded-2xl shadow-sm shrink-0">
+        <div class="w-9 h-9 bg-teal-50 dark:bg-teal-950/40 text-teal-600 dark:text-teal-400 rounded-xl flex items-center justify-center">
+          <span class="material-symbols-outlined text-[20px] icon-fill">calendar_month</span>
+        </div>
         <div>
-          <p class="font-label-sm text-[10px] text-on-surface-variant uppercase tracking-wider">วันที่ระบบปัจจุบัน</p>
-          <p class="font-label-md text-label-md font-bold text-slate-800">{{ formattedToday }}</p>
+          <p class="text-[9px] text-slate-400 dark:text-slate-500 uppercase tracking-widest font-bold">วันที่ระบบปัจจุบัน</p>
+          <p class="text-xs font-black text-slate-800 dark:text-white mt-0.5">{{ formattedToday }}</p>
         </div>
       </div>
     </div>
 
-    <!-- Bento Grid Summary Metrics -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter mb-gutter">
-      <!-- Metric 1: Total Expired -->
-      <div class="bg-surface-container-lowest border border-outline-variant rounded-2xl p-5 flex flex-col justify-between shadow-xs relative overflow-hidden group">
-        <div class="absolute -right-4 -top-4 w-16 h-16 bg-error/5 rounded-full pointer-events-none group-hover:scale-150 transition-transform duration-300"></div>
+    <!-- ─── Bento Summary KPI Metrics ──────────────────────────────── -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <!-- KPI 1: Expired -->
+      <div class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-3xl p-5 shadow-sm relative overflow-hidden group">
+        <div class="absolute -right-4 -top-4 w-14 h-14 bg-red-50 dark:bg-red-950/20 rounded-full group-hover:scale-125 transition-transform duration-300 pointer-events-none"></div>
         <div class="flex items-center justify-between mb-4">
-          <span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider font-bold">หมดอายุแล้ว</span>
-          <span class="material-symbols-outlined text-error text-[22px] icon-fill">dangerous</span>
+          <span class="text-[9px] text-slate-400 dark:text-slate-500 uppercase tracking-widest font-bold">หมดอายุคาคลัง</span>
+          <span class="material-symbols-outlined text-red-500 text-[20px] icon-fill">dangerous</span>
         </div>
-        <div>
-          <span class="font-display-lg text-display-lg font-bold text-on-surface" :class="expiredCount > 0 ? 'text-error animate-pulse' : 'text-on-surface'">
-            {{ expiredCount }}
-          </span>
-          <span class="text-sm text-on-surface-variant font-normal ml-1">รายการ</span>
+        <div class="flex items-baseline gap-1">
+          <span class="text-3xl font-black" :class="expiredCount > 0 ? 'text-red-500' : 'text-slate-800 dark:text-white'">{{ expiredCount }}</span>
+          <span class="text-[10px] text-slate-400 dark:text-slate-500 font-bold">รายการ</span>
         </div>
       </div>
 
-      <!-- Metric 2: Expiring in 30 Days (Critical) -->
-      <div class="bg-surface-container-lowest border border-outline-variant rounded-2xl p-5 flex flex-col justify-between shadow-xs relative overflow-hidden group">
-        <div class="absolute -right-4 -top-4 w-16 h-16 bg-orange-500/5 rounded-full pointer-events-none group-hover:scale-150 transition-transform duration-300"></div>
+      <!-- KPI 2: Expiring 30 Days -->
+      <div class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-3xl p-5 shadow-sm relative overflow-hidden group">
+        <div class="absolute -right-4 -top-4 w-14 h-14 bg-orange-50 dark:bg-orange-950/20 rounded-full group-hover:scale-125 transition-transform duration-300 pointer-events-none"></div>
         <div class="flex items-center justify-between mb-4">
-          <span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider font-bold">หมดอายุใน 30 วัน</span>
-          <span class="material-symbols-outlined text-orange-500 text-[22px] icon-fill">warning</span>
+          <span class="text-[9px] text-slate-400 dark:text-slate-500 uppercase tracking-widest font-bold">วิกฤต (ใน 30 วัน)</span>
+          <span class="material-symbols-outlined text-orange-500 text-[20px] icon-fill">warning</span>
         </div>
-        <div>
-          <span class="font-display-lg text-display-lg font-bold text-on-surface" :class="criticalCount > 0 ? 'text-orange-500 font-extrabold' : 'text-on-surface'">
-            {{ criticalCount }}
-          </span>
-          <span class="text-sm text-on-surface-variant font-normal ml-1">รายการ</span>
+        <div class="flex items-baseline gap-1">
+          <span class="text-3xl font-black text-orange-500">{{ criticalCount }}</span>
+          <span class="text-[10px] text-slate-400 dark:text-slate-500 font-bold">รายการ</span>
         </div>
       </div>
 
-      <!-- Metric 3: Expiring in 90 Days -->
-      <div class="bg-surface-container-lowest border border-outline-variant rounded-2xl p-5 flex flex-col justify-between shadow-xs relative overflow-hidden group">
-        <div class="absolute -right-4 -top-4 w-16 h-16 bg-amber-500/5 rounded-full pointer-events-none group-hover:scale-150 transition-transform duration-300"></div>
+      <!-- KPI 3: Expiring 90 Days -->
+      <div class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-3xl p-5 shadow-sm relative overflow-hidden group">
+        <div class="absolute -right-4 -top-4 w-14 h-14 bg-amber-50 dark:bg-amber-950/20 rounded-full group-hover:scale-125 transition-transform duration-300 pointer-events-none"></div>
         <div class="flex items-center justify-between mb-4">
-          <span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider font-bold">หมดอายุใน 90 วัน</span>
-          <span class="material-symbols-outlined text-amber-500 text-[22px]">pending_actions</span>
+          <span class="text-[9px] text-slate-400 dark:text-slate-500 uppercase tracking-widest font-bold">เฝ้าระวัง (ใน 90 วัน)</span>
+          <span class="material-symbols-outlined text-amber-500 text-[20px]">pending_actions</span>
         </div>
-        <div>
-          <span class="font-display-lg text-display-lg font-bold text-on-surface">
-            {{ within90DaysCount }}
-          </span>
-          <span class="text-sm text-on-surface-variant font-normal ml-1">รายการ</span>
+        <div class="flex items-baseline gap-1">
+          <span class="text-3xl font-black text-amber-600 dark:text-amber-400">{{ within90DaysCount }}</span>
+          <span class="text-[10px] text-slate-400 dark:text-slate-500 font-bold">รายการ</span>
         </div>
       </div>
 
-      <!-- Metric 4: Average Shelf Life Left -->
-      <div class="bg-surface-container-lowest border border-outline-variant rounded-2xl p-5 flex flex-col justify-between shadow-xs relative overflow-hidden group">
-        <div class="absolute -right-4 -top-4 w-16 h-16 bg-primary/5 rounded-full pointer-events-none group-hover:scale-150 transition-transform duration-300"></div>
+      <!-- KPI 4: Avg Shelf Life -->
+      <div class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-3xl p-5 shadow-sm relative overflow-hidden group">
+        <div class="absolute -right-4 -top-4 w-14 h-14 bg-teal-50 dark:bg-teal-950/20 rounded-full group-hover:scale-125 transition-transform duration-300 pointer-events-none"></div>
         <div class="flex items-center justify-between mb-4">
-          <span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider font-bold">อายุเฉลี่ยคงเหลือ</span>
-          <span class="material-symbols-outlined text-primary text-[22px]">hourglass_empty</span>
+          <span class="text-[9px] text-slate-400 dark:text-slate-500 uppercase tracking-widest font-bold">อายุเฉลี่ยคงเหลือ</span>
+          <span class="material-symbols-outlined text-teal-600 dark:text-teal-400 text-[20px]">hourglass_empty</span>
         </div>
-        <div>
-          <span class="font-display-lg text-display-lg font-bold text-on-surface">
-            {{ avgDaysLeft }}
-          </span>
-          <span class="text-sm text-on-surface-variant font-normal ml-1">วัน</span>
+        <div class="flex items-baseline gap-1">
+          <span class="text-3xl font-black text-teal-600 dark:text-teal-400">{{ avgDaysLeft }}</span>
+          <span class="text-[10px] text-slate-400 dark:text-slate-500 font-bold">วัน</span>
         </div>
       </div>
     </div>
 
-    <!-- Main Filter Controls Dashboard -->
-    <div class="bg-white border border-outline-variant rounded-3xl p-6 shadow-sm mb-gutter">
-      <div class="flex flex-col lg:flex-row gap-8 justify-between items-start lg:items-center">
-        <!-- Search and Quick Threshold Selectors -->
-        <div class="flex-grow w-full lg:max-w-2xl flex flex-col sm:flex-row items-center gap-4">
-          <!-- Real-time Text Search input -->
+    <!-- ─── Interactive Controls Panel ───────────────────────────── -->
+    <div class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-3xl p-6 shadow-sm">
+      <div class="flex flex-col lg:flex-row gap-6 justify-between items-stretch lg:items-center">
+        
+        <!-- Search and Quick Threshold Filter Buttons -->
+        <div class="flex-grow flex flex-col sm:flex-row items-center gap-4">
+          <!-- Text Search input -->
           <div class="relative w-full sm:w-80">
-            <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">search</span>
+            <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-[18px]">search</span>
             <input
               v-model="searchQuery"
               type="text"
-              placeholder="ค้นหาชื่อ หรือแบรนด์สินค้า..."
-              class="w-full bg-surface-container-low border border-outline-variant rounded-full py-2.5 pl-10 pr-4 focus:ring-2 focus:ring-primary focus:border-primary outline-none font-body-md text-body-md text-on-surface transition-all"
+              placeholder="ค้นหายา หรือแบรนด์เวชภัณฑ์..."
+              class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl py-2.5 pl-10 pr-4 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none text-xs font-semibold text-slate-800 dark:text-slate-100 transition-all shadow-inner"
             />
           </div>
 
-          <!-- Quick Threshold Filter Buttons -->
+          <!-- Quick Threshold Preset Buttons -->
           <div class="flex flex-wrap gap-2 w-full">
             <button
               v-for="btn in thresholdButtons"
               :key="btn.days"
               @click="setThreshold(btn.days)"
-              class="px-4 py-2.5 rounded-full font-label-md text-label-md whitespace-nowrap transition-all border shadow-xs"
+              class="px-4 py-2.5 rounded-2xl text-[11px] font-black transition-all border active:scale-95"
               :class="[
                 expiryThreshold === btn.days 
-                  ? 'bg-primary text-on-primary border-primary font-bold' 
-                  : 'bg-surface-container-low text-on-surface border-outline-variant hover:bg-surface-container-high'
+                  ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 border-slate-900 dark:border-white shadow-sm' 
+                  : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/80'
               ]"
             >
               {{ btn.label }}
@@ -123,11 +115,11 @@
           </div>
         </div>
 
-        <!-- Custom Threshold Slider (Pharmacist controls) -->
-        <div class="bg-slate-50 border border-outline-variant/60 rounded-2xl p-4 w-full lg:w-96 shadow-inner flex flex-col gap-2">
-          <div class="flex justify-between items-center">
-            <span class="font-label-md text-label-md text-slate-700 font-bold">กำหนดช่วงเวลาแจ้งเตือน</span>
-            <span class="bg-primary/10 text-primary px-3 py-1 rounded-full font-label-md text-label-md font-bold border border-primary/20">
+        <!-- Custom Threshold Slider Container -->
+        <div class="bg-slate-50/50 dark:bg-slate-800/20 border border-slate-200/60 dark:border-slate-800/80 rounded-2xl p-4 w-full lg:w-96 flex flex-col gap-2">
+          <div class="flex justify-between items-center text-xs">
+            <span class="text-slate-700 dark:text-slate-300 font-black">เกณฑ์แจ้งเตือนยาหมดอายุ</span>
+            <span class="bg-teal-500 text-white px-2.5 py-0.5 rounded-full font-black text-[10px] tracking-wider uppercase">
               ภายใน {{ expiryThreshold }} วัน
             </span>
           </div>
@@ -137,141 +129,138 @@
             min="5"
             max="730"
             step="5"
-            class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-primary focus:outline-none"
+            class="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-teal-500 focus:outline-none"
           />
-          <div class="flex justify-between font-label-sm text-[10px] text-on-surface-variant">
+          <div class="flex justify-between text-[9px] text-slate-400 font-bold">
             <span>5 วัน</span>
-            <span>3 เดือน (90 วัน)</span>
-            <span>1 ปี (365 วัน)</span>
-            <span>2 ปี (730 วัน)</span>
+            <span>90 วัน</span>
+            <span>1 ปี</span>
+            <span>2 ปี</span>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Alert List Grid -->
-    <div class="bg-white border border-outline-variant rounded-3xl p-6 shadow-sm">
-      <div class="flex items-center justify-between mb-6">
-        <h3 class="font-headline-md text-headline-md text-slate-800 font-bold flex items-center gap-2">
-          รายการยาเวชภัณฑ์ที่ใกล้หมดอายุ
-          <span class="bg-slate-100 text-slate-700 text-xs px-3 py-1 rounded-full font-semibold">
+    <!-- ─── Warning Data Table ────────────────────────────────────── -->
+    <div class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-3xl p-6 shadow-sm">
+      <div class="flex items-center justify-between mb-5">
+        <h3 class="text-sm font-black text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse"></span>
+          เวชภัณฑ์ที่ตรงตามเงื่อนไขความเสี่ยง
+          <span class="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs px-2.5 py-0.5 rounded-full font-bold">
             พบ {{ filteredExpiredProducts.length }} รายการ
           </span>
         </h3>
       </div>
 
-      <!-- Warning Table -->
-      <div v-if="filteredExpiredProducts.length > 0" class="overflow-x-auto border border-outline-variant/60 rounded-2xl">
-        <table class="min-w-full divide-y divide-outline-variant">
-          <thead class="bg-slate-50/80 backdrop-blur-xs">
-            <tr>
-              <th class="px-6 py-4 text-left font-label-md text-label-md text-on-surface-variant font-bold">ข้อมูลเวชภัณฑ์</th>
-              <th class="px-6 py-4 class-left font-label-md text-label-md text-on-surface-variant font-bold">วันที่หมดอายุ</th>
-              <th class="px-6 py-4 class-left font-label-md text-label-md text-on-surface-variant font-bold">วันคงเหลือ</th>
-              <th class="px-6 py-4 class-left font-label-md text-label-md text-on-surface-variant font-bold">สต็อก / มูลค่าคลัง</th>
-              <th class="px-6 py-4 class-left font-label-md text-label-md text-on-surface-variant font-bold">ระดับความเสี่ยง</th>
-              <th class="px-6 py-4 text-center font-label-md text-label-md text-on-surface-variant font-bold">การจัดการเชิงรุก</th>
+      <!-- Warning Table View -->
+      <div v-if="filteredExpiredProducts.length > 0" class="overflow-x-auto border border-slate-100 dark:border-slate-800/80 rounded-2xl">
+        <table class="min-w-full">
+          <thead>
+            <tr class="bg-slate-50/50 dark:bg-slate-800/40 border-b border-slate-100 dark:border-slate-800">
+              <th class="px-6 py-3.5 text-left text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-widest font-bold">ข้อมูลเวชภัณฑ์</th>
+              <th class="px-6 py-3.5 text-left text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-widest font-bold">วันที่หมดอายุ</th>
+              <th class="px-6 py-3.5 text-left text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-widest font-bold">อายุการใช้คงเหลือ</th>
+              <th class="px-6 py-3.5 text-left text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-widest font-bold">สต็อก / มูลค่า</th>
+              <th class="px-6 py-3.5 text-left text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-widest font-bold">ความเสี่ยง</th>
+              <th class="px-6 py-3.5 text-center text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-widest font-bold">การจัดการเชิงรุก</th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-outline-variant bg-white">
+          <tbody class="divide-y divide-slate-50 dark:divide-slate-800/50">
             <tr 
               v-for="item in filteredExpiredProducts" 
               :key="item.id"
-              class="hover:bg-slate-50/50 transition-colors group"
+              class="hover:bg-slate-50/50 dark:hover:bg-slate-800/20 transition-colors group"
             >
-              <!-- Name and Brand details -->
+              <!-- Info column -->
               <td class="px-6 py-4">
                 <div>
-                  <p class="font-label-md text-label-md text-slate-800 font-bold group-hover:text-primary transition-colors">{{ item.name }}</p>
-                  <p class="font-label-sm text-label-sm text-on-surface-variant/80 mt-0.5">{{ item.brand }} • {{ item.category }}</p>
+                  <p class="text-xs font-black text-slate-800 dark:text-white group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">{{ item.name }}</p>
+                  <p class="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5 font-bold">{{ item.brand }} · {{ item.category }}</p>
                 </div>
               </td>
 
-              <!-- Date Expiry -->
-              <td class="px-6 py-4 font-body-md text-body-md text-slate-700">
-                <div class="flex items-center gap-1.5">
-                  <span class="material-symbols-outlined text-[16px] text-on-surface-variant">hourglass_bottom</span>
-                  <span>{{ formatExpiryDate(item.expiryDate) }}</span>
-                </div>
+              <!-- Date column -->
+              <td class="px-6 py-4">
+                <span class="text-xs text-slate-600 dark:text-slate-300 font-semibold">{{ formatExpiryDate(item.expiryDate) }}</span>
               </td>
 
-              <!-- Days Remaining status -->
+              <!-- Days remaining column -->
               <td class="px-6 py-4">
                 <div class="flex flex-col">
                   <span 
-                    class="font-label-md text-label-md font-bold"
+                    class="text-xs font-black"
                     :class="[
-                      item.daysLeft < 0 ? 'text-error' :
-                      item.daysLeft <= 30 ? 'text-error font-extrabold' :
-                      item.daysLeft <= 90 ? 'text-orange-500' : 'text-amber-600'
+                      item.daysLeft < 0 ? 'text-red-600 dark:text-red-400' :
+                      item.daysLeft <= 30 ? 'text-red-500 font-extrabold animate-pulse' :
+                      item.daysLeft <= 90 ? 'text-orange-500' : 'text-amber-500'
                     ]"
                   >
                     {{ getRemainingDaysText(item.daysLeft) }}
                   </span>
-                  <span class="font-label-sm text-[10px] text-on-surface-variant mt-0.5">
-                    {{ item.daysLeft < 0 ? 'หมดอายุไปแล้ว' : 'วันคงเหลือใช้งาน' }}
-                  </span>
+                  <span class="text-[9px] text-slate-400 mt-0.5">{{ item.daysLeft < 0 ? 'หมดอายุแล้ว' : 'ก่อนหมดอายุจริง' }}</span>
                 </div>
               </td>
 
-              <!-- Stock and Financial value -->
+              <!-- Stock & value column -->
               <td class="px-6 py-4">
                 <div>
-                  <p class="font-label-md text-label-md text-slate-700 font-semibold">{{ item.stock }} {{ item.unit }}</p>
-                  <p class="font-label-sm text-label-sm text-slate-500 mt-0.5">มูลค่า: ฿{{ (item.stock * item.price).toLocaleString() }}</p>
+                  <p class="text-xs font-black text-slate-700 dark:text-slate-200">{{ item.stock }} {{ item.unit }}</p>
+                  <p class="text-[9px] text-slate-400 font-bold mt-0.5">มูลค่า: ฿{{ (item.stock * item.price).toLocaleString() }}</p>
                 </div>
               </td>
 
               <!-- Severity Warning Badge -->
               <td class="px-6 py-4">
                 <span 
-                  class="px-3 py-1.5 rounded-full font-label-sm text-label-sm border inline-flex items-center gap-1.5"
+                  class="px-2.5 py-1 rounded-full text-[9px] font-black border inline-flex items-center gap-1.5"
                   :class="[
-                    item.daysLeft < 0 ? 'bg-red-50 text-red-700 border-red-200' :
-                    item.daysLeft <= 30 ? 'bg-error-container text-on-error-container border-error/20 animate-pulse' :
-                    item.daysLeft <= 90 ? 'bg-orange-50 text-orange-700 border-orange-200' : 'bg-amber-50 text-amber-700 border-amber-200'
+                    item.daysLeft < 0 ? 'bg-red-50 dark:bg-red-950/20 text-red-600 dark:text-red-400 border-red-200 dark:border-red-900/30' :
+                    item.daysLeft <= 30 ? 'bg-red-100 dark:bg-red-950/30 text-red-700 dark:text-red-400 border-red-300 dark:border-red-900/40 animate-pulse' :
+                    item.daysLeft <= 90 ? 'bg-orange-50 dark:bg-orange-950/20 text-orange-600 dark:text-orange-400 border-orange-200 dark:border-orange-900/30' :
+                                          'bg-amber-50 dark:bg-amber-950/20 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-900/30'
                   ]"
                 >
                   <span class="w-1.5 h-1.5 rounded-full" 
                         :class="[
                           item.daysLeft < 0 ? 'bg-red-600' :
-                          item.daysLeft <= 30 ? 'bg-error' :
+                          item.daysLeft <= 30 ? 'bg-red-500' :
                           item.daysLeft <= 90 ? 'bg-orange-500' : 'bg-amber-500'
                         ]"></span>
                   {{ getSeverityLabel(item.daysLeft) }}
                 </span>
               </td>
 
-              <!-- Proactive Actions buttons -->
+              <!-- Actions column -->
               <td class="px-6 py-4 text-center">
-                <div class="flex items-center justify-center gap-2">
-                  <!-- Action 1: Promotion Discount -->
+                <div class="flex items-center justify-center gap-1">
+                  <!-- Discount Promo -->
                   <button 
                     v-if="item.daysLeft >= 0 && item.stock > 0" 
                     @click="applyPromotion(item)"
-                    class="p-2 hover:bg-primary/10 text-primary hover:text-primary rounded-full transition-colors active:scale-95"
+                    class="p-2 hover:bg-teal-50 dark:hover:bg-teal-950/40 text-teal-600 dark:text-teal-400 rounded-xl transition-all active:scale-90"
                     title="จัดโปรโมชั่นลดราคาสินค้าเพื่อกระตุ้นยอดขาย"
                   >
-                    <span class="material-symbols-outlined text-[20px]">sell</span>
+                    <span class="material-symbols-outlined text-[18px]">sell</span>
                   </button>
 
-                  <!-- Action 2: Return to Manufacturer -->
+                  <!-- Claim refund -->
                   <button 
                     v-if="item.daysLeft >= 0"
                     @click="initiateReturn(item)"
-                    class="p-2 hover:bg-slate-100 text-slate-600 hover:text-slate-900 rounded-full transition-colors active:scale-95"
+                    class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white rounded-xl transition-all active:scale-90"
                     title="ส่งเคลมคืนบริษัทผู้ผลิตตามโควตา"
                   >
-                    <span class="material-symbols-outlined text-[20px]">assignment_return</span>
+                    <span class="material-symbols-outlined text-[18px]">assignment_return</span>
                   </button>
 
-                  <!-- Action 3: Dispose / Write Off -->
+                  <!-- Disposal / Write off -->
                   <button 
                     @click="disposeProduct(item)"
-                    class="p-2 hover:bg-error/10 text-error rounded-full transition-colors active:scale-95"
+                    class="p-2 hover:bg-red-50 dark:hover:bg-red-950/40 text-red-500 rounded-xl transition-all active:scale-90"
                     title="บันทึกจำหน่ายทิ้งออกจากสต็อกเวชภัณฑ์"
                   >
-                    <span class="material-symbols-outlined text-[20px]">delete_sweep</span>
+                    <span class="material-symbols-outlined text-[18px]">delete_sweep</span>
                   </button>
                 </div>
               </td>
@@ -280,12 +269,12 @@
         </table>
       </div>
 
-      <!-- Empty State -->
-      <div v-else class="text-center py-16 text-on-surface-variant">
-        <span class="material-symbols-outlined text-5xl block mb-3 opacity-40 text-primary">verified</span>
-        <h4 class="font-headline-md text-headline-md font-bold mb-1 text-slate-800">ระบบคลังสินค้าปลอดภัยดีเยี่ยม!</h4>
-        <p class="font-body-md text-body-md max-w-md mx-auto">
-          ไม่พบผลิตภัณฑ์ยาเวชภัณฑ์ที่มีวันหมดอายุต่ำกว่า <span class="font-bold text-primary">{{ expiryThreshold }} วัน</span> ตามเกณฑ์และคำค้นหาที่คุณเลือก
+      <!-- Empty State View -->
+      <div v-else class="text-center py-16 text-slate-400 dark:text-slate-500">
+        <span class="material-symbols-outlined text-5xl block mb-3 opacity-30 text-teal-500 icon-fill">verified</span>
+        <h4 class="text-xs font-black text-slate-800 dark:text-white uppercase tracking-wider mb-1">คลังยาปลอดภัยดีเยี่ยม!</h4>
+        <p class="text-[11px] max-w-md mx-auto text-slate-400 dark:text-slate-500 leading-relaxed font-semibold">
+          ไม่พบผลิตภัณฑ์เวชภัณฑ์ที่หมดอายุหรือใกล้หมดอายุต่ำกว่า <span class="text-teal-600 dark:text-teal-400 font-black">{{ expiryThreshold }} วัน</span> ตามเงื่อนไขการค้นหาของคุณในขณะนี้
         </p>
       </div>
     </div>
@@ -299,33 +288,32 @@ definePageMeta({
   layout: 'admin',
 })
 
-// 1. Fetch live products list from dynamic database route
+// 1. Fetch products list from dynamic database API
 const { data: result } = useFetch<any>('/api/products')
 const productsList = computed<any[]>(() => result.value?.products || [])
 
-// Constant current system date as anchor (24 May 2026) for stable calculation matching seeded dates
+// Stable system date anchor for database match (24 May 2026)
 const todayDate = new Date('2026-05-24')
 const formattedToday = '24 พ.ค. 2026'
 
 // Warning Threshold state in days
 const expiryThreshold = ref(180)
+const searchQuery = ref('')
 
-// Quick Filter Button presets
+// Presets
 const thresholdButtons = [
-  { label: 'หมดอายุแล้ว', days: 5 }, // set low to catch expired
+  { label: 'หมดอายุแล้ว', days: 5 },
   { label: 'ภายใน 30 วัน', days: 30 },
   { label: 'ภายใน 90 วัน', days: 90 },
   { label: 'ภายใน 180 วัน', days: 180 },
   { label: 'ภายใน 1 ปี', days: 365 },
 ]
 
-const searchQuery = ref('')
-
 const setThreshold = (days: number) => {
   expiryThreshold.value = days
 }
 
-// 2. Map and parse days remaining for each product
+// Map days remaining for products
 const productsWithDaysLeft = computed(() => {
   return productsList.value.map(p => {
     const expiry = new Date(p.expiryDate)
@@ -339,17 +327,15 @@ const productsWithDaysLeft = computed(() => {
   })
 })
 
-// 3. Filter expiring products by warning threshold and search term, sorted by daysLeft ascending
+// Filter products based on search and threshold criteria, ordered by daysLeft ascending
 const filteredExpiredProducts = computed(() => {
   const q = searchQuery.value.trim().toLowerCase()
   const threshold = expiryThreshold.value
   
   return productsWithDaysLeft.value
     .filter(p => {
-      // Expiry filter (days remaining <= threshold)
       const isExpiring = p.daysLeft <= threshold
       
-      // Text search filter
       const matchesSearch = !q || 
         (p.name || '').toLowerCase().includes(q) ||
         (p.brand || '').toLowerCase().includes(q) ||
@@ -360,7 +346,7 @@ const filteredExpiredProducts = computed(() => {
     .sort((a, b) => a.daysLeft - b.daysLeft)
 })
 
-// 4. Summaries and KPI aggregates
+// Aggregate KPI calculation metrics
 const expiredCount = computed(() => {
   return productsWithDaysLeft.value.filter(p => p.daysLeft < 0).length
 })
@@ -380,7 +366,7 @@ const avgDaysLeft = computed(() => {
   return Math.round(sum / list.length)
 })
 
-// Formatting and utility functions
+// Display/formatting utils
 const formatExpiryDate = (dateStr: string) => {
   if (!dateStr) return '-'
   try {
@@ -402,31 +388,31 @@ const getRemainingDaysText = (days: number) => {
 }
 
 const getSeverityLabel = (days: number) => {
-  if (days < 0) return 'หมดอายุทิ้งคลัง'
-  if (days <= 30) return 'วิกฤตด่วน (Critical)'
-  if (days <= 90) return 'เฝ้าระวังสูง (Warning)'
+  if (days < 0) return 'หมดอายุแล้ว'
+  if (days <= 30) return 'วิกฤตด่วน (30 วัน)'
+  if (days <= 90) return 'เฝ้าระวังสูง (90 วัน)'
   return 'เฝ้าระวังทั่วไป'
 }
 
-// Inter-system Mock Action triggers
+// Proactive Mock Action handlers
 const applyPromotion = (product: any) => {
-  alert(`ดำเนินการสร้างโปรโมชั่นลดราคาพิเศษ 40% สำหรับสินค้า "${product.name}" เพื่อระบายคลังก่อนการหมดอายุจริง!`)
+  alert(`ดำเนินการสร้างโปรโมชั่นลดราคาพิเศษ 40% สำหรับสินค้า "${product.name}" เพื่อกระตุ้นและระบายออกสู่ตลาดก่อนหมดอายุสำเร็จ!`)
 }
 
 const initiateReturn = (product: any) => {
-  alert(`ดำเนินการยื่นเรื่องทำรายการจัดทำเอกสารส่งเคลมคืนล็อตสินค้า "${product.name}" ไปยังผู้ผลิตล็อตสินค้าต้นทางเรียบร้อยแล้ว`)
+  alert(`ดำเนินการจัดทำเอกสารและยื่นเรื่องเคลมส่งคืนล็อตสินค้า "${product.name}" ไปยังผู้ผลิตเรียบร้อยแล้ว`)
 }
 
 const disposeProduct = (product: any) => {
-  const confirmDispose = confirm(`คุณต้องการยืนยันการบันทึกจำหน่ายทิ้ง (Write Off) ผลิตภัณฑ์ยา "${product.name}" ออกจากคลังสต็อกใช่หรือไม่? ข้อมูลจะถูกทำลายเชิงเวชภัณฑ์ความปลอดภัยและตัดยอดคงเหลือเป็นศูนย์`)
+  const confirmDispose = confirm(`คุณต้องการยืนยันการบันทึกจำหน่ายทิ้ง (Write Off) เวชภัณฑ์ยา "${product.name}" หรือไม่? การทำเช่นนี้เป็นการทำลายเชิงเวชภัณฑ์ความปลอดภัยและปรับยอดสต็อกให้หมดลงเป็นศูนย์`)
   if (confirmDispose) {
-    alert(`จำหน่ายทิ้งและหักยอดคลังสินค้าสำเร็จ`)
+    alert(`ทำรายการจำหน่ายทิ้งและปรับสต็อกเรียบร้อยแล้ว`)
   }
 }
 </script>
 
 <style scoped>
-/* Range Slider modern standard styling */
+/* Modern Range Slider thumb visual styles */
 input[type="range"]::-webkit-slider-thumb {
   box-shadow: 0 2px 4px rgba(0,0,0,0.15);
   transition: transform 0.1s;
@@ -435,20 +421,6 @@ input[type="range"]::-webkit-slider-thumb:hover {
   transform: scale(1.15);
 }
 .material-symbols-outlined {
-  font-family: 'Material Symbols Outlined';
-  font-weight: normal;
-  font-style: normal;
-  font-size: 24px;
-  display: inline-block;
-  line-height: 1;
-  text-transform: none;
-  letter-spacing: normal;
-  word-wrap: normal;
-  white-space: nowrap;
-  direction: ltr;
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-  -moz-osx-font-smoothing: grayscale;
   font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
 }
 .icon-fill {

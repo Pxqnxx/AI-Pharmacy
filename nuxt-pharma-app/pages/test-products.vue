@@ -1,128 +1,147 @@
 <template>
-  <div>
-    <!-- Page Header and Live Connection Status -->
-    <div class="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+  <div class="space-y-6" style="font-family: 'Plus Jakarta Sans', sans-serif;">
+
+    <!-- ─── Page Header and Live Connection Status ───────────────── -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
       <div>
-        <h2 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg mb-2"> Live Products DB Test</h2>
-        <p class="font-body-md text-body-md text-on-surface-variant">ทดสอบดึงข้อมูลสดของผลิตภัณฑ์จาก Supabase Postgres ผ่าน Drizzle ORM</p>
+        <div class="flex items-center gap-2.5 mb-1">
+          <span class="material-symbols-outlined text-indigo-500 text-[28px] icon-fill">database</span>
+          <h2 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">ทดสอบและวิเคราะห์ฐานข้อมูล</h2>
+        </div>
+        <p class="text-xs text-slate-400 dark:text-slate-500 ml-9">
+          ตรวจสอบและวิเคราะห์การเชื่อมต่อแบบเรียลไทม์กับ Supabase Postgres ผ่าน Drizzle ORM
+        </p>
       </div>
-      <div class="flex items-center gap-2 bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 px-4 py-2 rounded-full border border-emerald-200/50 shadow-sm shrink-0">
-        <span class="w-3 h-3 bg-emerald-500 rounded-full animate-ping"></span>
-        <span class="font-label-md text-label-md font-bold">เชื่อมต่อฐานข้อมูลสำเร็จ</span>
+
+      <!-- Live Connection Badge -->
+      <div class="inline-flex items-center gap-2 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 px-4 py-2 rounded-2xl border border-emerald-200/50 dark:border-emerald-800/30 shadow-sm shrink-0">
+        <span class="relative flex h-2 w-2">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+        </span>
+        <span class="text-xs font-black uppercase tracking-wider">เชื่อมต่อ Live DB สำเร็จ</span>
       </div>
     </div>
 
-    <!-- Bento Grid Summary Metrics -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-gutter mb-gutter">
+    <!-- ─── Bento Grid Summary Metrics ────────────────────────────── -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
       <!-- Metric 1: Total Products -->
-      <div class="bg-surface-container-lowest border border-outline-variant rounded-2xl p-5 flex flex-col justify-between shadow-sm relative overflow-hidden group">
-        <div class="absolute -right-4 -top-4 w-16 h-16 bg-primary/5 rounded-full pointer-events-none group-hover:scale-150 transition-transform duration-300"></div>
+      <div class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-3xl p-5 shadow-sm relative overflow-hidden group">
+        <div class="absolute -right-4 -top-4 w-14 h-14 bg-indigo-50 dark:bg-indigo-950/20 rounded-full group-hover:scale-125 transition-transform duration-300 pointer-events-none"></div>
         <div class="flex items-center justify-between mb-4">
-          <span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider font-bold">รายการสินค้าทั้งหมด</span>
-          <span class="material-symbols-outlined text-primary text-[22px] icon-fill">inventory</span>
+          <span class="text-[9px] text-slate-400 dark:text-slate-500 uppercase tracking-widest font-bold">รายการสินค้าคงทะเบียน</span>
+          <span class="material-symbols-outlined text-indigo-500 text-[20px] icon-fill">inventory</span>
         </div>
-        <div>
-          <span class="font-display-lg text-display-lg font-bold text-on-surface">{{ products.length }}</span>
-          <span class="text-sm text-on-surface-variant font-normal ml-1">รายการ</span>
+        <div class="flex items-baseline gap-1">
+          <span class="text-3xl font-black text-slate-800 dark:text-white">{{ products.length }}</span>
+          <span class="text-[10px] text-slate-400 dark:text-slate-500 font-bold">รายการ</span>
         </div>
       </div>
 
-      <!-- Metric 2: Inventory Value -->
-      <div class="bg-surface-container-lowest border border-outline-variant rounded-2xl p-5 flex flex-col justify-between shadow-sm relative overflow-hidden group">
-        <div class="absolute -right-4 -top-4 w-16 h-16 bg-secondary/5 rounded-full pointer-events-none group-hover:scale-150 transition-transform duration-300"></div>
+      <!-- Metric 2: Total Inventory Value -->
+      <div class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-3xl p-5 shadow-sm relative overflow-hidden group">
+        <div class="absolute -right-4 -top-4 w-14 h-14 bg-teal-50 dark:bg-teal-950/20 rounded-full group-hover:scale-125 transition-transform duration-300 pointer-events-none"></div>
         <div class="flex items-center justify-between mb-4">
-          <span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider font-bold">มูลค่าคลังสินค้าสะสม</span>
-          <span class="material-symbols-outlined text-secondary text-[22px]">payments</span>
+          <span class="text-[9px] text-slate-400 dark:text-slate-500 uppercase tracking-widest font-bold">มูลค่าคลังสินค้าสะสม</span>
+          <span class="material-symbols-outlined text-teal-600 dark:text-teal-400 text-[20px] icon-fill">payments</span>
         </div>
-        <div>
-          <span class="font-display-lg text-display-lg font-bold text-on-surface">฿{{ totalValue.toLocaleString() }}</span>
-          <span class="text-sm text-on-surface-variant font-normal ml-1">บาท</span>
+        <div class="flex items-baseline gap-1">
+          <span class="text-3xl font-black text-teal-600 dark:text-teal-400">฿{{ totalValue.toLocaleString() }}</span>
+          <span class="text-[10px] text-slate-400 dark:text-slate-500 font-bold">บาท</span>
         </div>
       </div>
 
       <!-- Metric 3: Out of Stock -->
-      <div class="bg-surface-container-lowest border border-outline-variant rounded-2xl p-5 flex flex-col justify-between shadow-sm relative overflow-hidden group">
-        <div class="absolute -right-4 -top-4 w-16 h-16 bg-error/5 rounded-full pointer-events-none group-hover:scale-150 transition-transform duration-300"></div>
+      <div class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-3xl p-5 shadow-sm relative overflow-hidden group">
+        <div class="absolute -right-4 -top-4 w-14 h-14 bg-red-50 dark:bg-red-950/20 rounded-full group-hover:scale-125 transition-transform duration-300 pointer-events-none"></div>
         <div class="flex items-center justify-between mb-4">
-          <span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider font-bold">สินค้าหมด (Out of Stock)</span>
-          <span class="material-symbols-outlined text-error text-[22px] icon-fill">dangerous</span>
+          <span class="text-[9px] text-slate-400 dark:text-slate-500 uppercase tracking-widest font-bold">สต็อกยาหมด (Out of Stock)</span>
+          <span class="material-symbols-outlined text-red-500 text-[20px] icon-fill">dangerous</span>
         </div>
-        <div>
-          <span class="font-display-lg text-display-lg font-bold text-on-surface" :class="outOfStockCount > 0 ? 'text-error animate-pulse' : 'text-on-surface'">
-            {{ outOfStockCount }}
-          </span>
-          <span class="text-sm text-on-surface-variant font-normal ml-1">รายการ</span>
+        <div class="flex items-baseline gap-1">
+          <span class="text-3xl font-black" :class="outOfStockCount > 0 ? 'text-red-500 font-black animate-pulse' : 'text-slate-800 dark:text-white'">{{ outOfStockCount }}</span>
+          <span class="text-[10px] text-slate-400 dark:text-slate-500 font-bold">รายการ</span>
         </div>
       </div>
     </div>
 
-    <!-- Search Input & Real-Time Filter -->
-    <div class="bg-surface-container-lowest border border-outline-variant rounded-2xl p-6 shadow-sm mb-gutter">
-      <div class="flex flex-col sm:flex-row items-center gap-4 justify-between mb-6">
-        <h3 class="font-headline-md text-headline-md text-on-surface font-bold">ตารางรายการผลิตภัณฑ์ในระบบ</h3>
-        <!-- Search input box -->
-        <div class="relative w-full sm:w-80">
-          <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">search</span>
+    <!-- ─── Real-Time Live Data Table ────────────────────────────── -->
+    <div class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-3xl p-6 shadow-sm">
+      <div class="flex flex-col sm:flex-row items-center gap-4 justify-between mb-5 border-b border-slate-100 dark:border-slate-800 pb-4">
+        <div>
+          <h3 class="text-sm font-black text-slate-900 dark:text-white uppercase tracking-wider">ตารางวิเคราะห์รายการฐานข้อมูลสด</h3>
+          <p class="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">ตรวจสอบโครงสร้าง ค่าน้ำหนัก ราคา และคะแนนประเมินดิบใน Drizzle Schema</p>
+        </div>
+        
+        <!-- Text Search -->
+        <div class="relative w-full sm:w-72">
+          <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-[18px]">search</span>
           <input
             v-model="searchQuery"
             type="text"
-            placeholder="ค้นหาชื่อ หรือหมวดหมู่สินค้า..."
-            class="w-full bg-surface-container-low border border-outline-variant rounded-full py-2.5 pl-10 pr-4 focus:ring-2 focus:ring-primary focus:border-primary outline-none font-body-md text-body-md text-on-surface transition-all shadow-xs"
+            placeholder="ค้นหาชื่อ หรือหมวดหมู่ยา..."
+            class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl py-2 pl-10 pr-4 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-xs font-semibold text-slate-800 dark:text-slate-100 transition-all shadow-inner"
           />
         </div>
       </div>
 
       <!-- Scrollable Data Table -->
-      <div class="overflow-x-auto border border-outline-variant/60 rounded-xl">
-        <table class="min-w-full divide-y divide-outline-variant">
-          <thead class="bg-surface-container-low">
-            <tr>
-              <th class="px-6 py-4 text-left font-label-md text-label-md text-on-surface-variant font-bold">ID</th>
-              <th class="px-6 py-4 text-left font-label-md text-label-md text-on-surface-variant font-bold">ชื่อผลิตภัณฑ์</th>
-              <th class="px-6 py-4 text-left font-label-md text-label-md text-on-surface-variant font-bold">หมวดหมู่</th>
-              <th class="px-6 py-4 text-left font-label-md text-label-md text-on-surface-variant font-bold">ราคา</th>
-              <th class="px-6 py-4 text-left font-label-md text-label-md text-on-surface-variant font-bold">ระดับสต็อก</th>
-              <th class="px-6 py-4 text-left font-label-md text-label-md text-on-surface-variant font-bold">คะแนนเฉลี่ย</th>
+      <div class="overflow-x-auto border border-slate-100 dark:border-slate-800/80 rounded-2xl">
+        <table class="min-w-full">
+          <thead>
+            <tr class="bg-slate-50/50 dark:bg-slate-800/40 border-b border-slate-100 dark:border-slate-800">
+              <th class="px-6 py-3.5 text-left text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-widest font-bold">SKU ID</th>
+              <th class="px-6 py-3.5 text-left text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-widest font-bold">ชื่อผลิตภัณฑ์ดิบ</th>
+              <th class="px-6 py-3.5 text-left text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-widest font-bold">หมวดหมู่</th>
+              <th class="px-6 py-3.5 text-left text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-widest font-bold">ราคาบิล</th>
+              <th class="px-6 py-3.5 text-left text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-widest font-bold">แถบสต็อกระดับคงเหลือ</th>
+              <th class="px-6 py-3.5 text-left text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-widest font-bold">คะแนนเฉลี่ย & ยอดขาย</th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-outline-variant bg-white">
+          <tbody class="divide-y divide-slate-50 dark:divide-slate-800/50">
             <tr 
               v-for="item in filteredProducts" 
               :key="item.id"
-              class="hover:bg-surface-container-lowest transition-colors group cursor-pointer"
+              class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors group cursor-pointer"
             >
-              <td class="px-6 py-4 font-label-md text-label-md text-tertiary">{{ item.id }}</td>
+              <td class="px-6 py-4">
+                <span class="text-xs font-mono font-bold text-indigo-500 dark:text-indigo-400">{{ item.id }}</span>
+              </td>
               <td class="px-6 py-4">
                 <div>
-                  <p class="font-label-md text-label-md text-on-surface font-bold group-hover:text-primary transition-colors">{{ item.name }}</p>
-                  <p class="font-label-sm text-label-sm text-on-surface-variant/80 mt-0.5">{{ item.brand }} • {{ item.unit }}</p>
+                  <p class="text-xs font-black text-slate-800 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{{ item.name }}</p>
+                  <p class="text-[9px] text-slate-400 dark:text-slate-500 mt-0.5 font-bold">{{ item.brand }} · {{ item.unit }}</p>
                 </div>
               </td>
               <td class="px-6 py-4">
                 <span 
-                  class="px-2.5 py-1 rounded-full font-label-sm text-[11px] border"
+                  class="px-2 py-0.5 rounded-full text-[9px] font-black border"
                   :class="[
-                    item.type === 'ยา' ? 'bg-primary/10 text-primary border-primary/20' : 'bg-secondary/10 text-secondary border-secondary/20'
+                    item.type === 'ยา' 
+                      ? 'bg-indigo-50 dark:bg-indigo-950/20 text-indigo-600 dark:text-indigo-400 border-indigo-200 dark:border-indigo-900/30' 
+                      : 'bg-teal-50 dark:bg-teal-950/20 text-teal-600 dark:text-teal-400 border-teal-200 dark:border-teal-900/30'
                   ]"
                 >
                   {{ item.category }}
                 </span>
               </td>
-              <td class="px-6 py-4 font-headline-md text-label-md font-bold text-on-surface">฿{{ item.price }}</td>
               <td class="px-6 py-4">
-                <div class="flex flex-col gap-1.5 w-32">
-                  <div class="flex items-center justify-between text-[11px] font-label-sm">
-                    <span :class="item.stock === 0 ? 'text-error font-bold' : 'text-on-surface-variant'">
-                      {{ item.stock === 0 ? 'สินค้าหมด' : `${item.stock} ชิ้น` }}
+                <span class="text-xs font-black text-slate-800 dark:text-white">฿{{ item.price }}</span>
+              </td>
+              <td class="px-6 py-4">
+                <div class="flex flex-col gap-1 w-28">
+                  <div class="flex items-center justify-between text-[9px] font-bold">
+                    <span :class="item.stock === 0 ? 'text-red-500 font-black' : 'text-slate-500 dark:text-slate-400'">
+                      {{ item.stock === 0 ? 'ยาหมดสต็อกแล้ว' : `${item.stock} ชิ้น` }}
                     </span>
                   </div>
-                  <!-- Visual stock bar -->
-                  <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                  <!-- Progress Visual Stock Bar -->
+                  <div class="w-full bg-slate-100 dark:bg-slate-850 rounded-full h-1 overflow-hidden">
                     <div 
                       class="h-full rounded-full transition-all duration-500"
                       :class="[
                         item.stock === 0 ? 'bg-transparent' :
-                        item.stock <= 5 ? 'bg-error' :
+                        item.stock <= 5 ? 'bg-red-500' :
                         item.stock <= 20 ? 'bg-orange-500' : 'bg-emerald-500'
                       ]"
                       :style="{ width: Math.min((item.stock / 60) * 100, 100) + '%' }"
@@ -132,16 +151,16 @@
               </td>
               <td class="px-6 py-4">
                 <div class="flex items-center gap-1 text-orange-500">
-                  <span class="material-symbols-outlined text-[18px] icon-fill">star</span>
-                  <span class="font-label-md text-label-md font-bold">{{ item.rating }}</span>
-                  <span class="text-[10px] text-on-surface-variant">({{ item.sold }} ขายแล้ว)</span>
+                  <span class="material-symbols-outlined text-[15px] icon-fill">star</span>
+                  <span class="text-xs font-black">{{ item.rating }}</span>
+                  <span class="text-[9px] text-slate-400 dark:text-slate-500 font-semibold">({{ item.sold }} ขาย)</span>
                 </div>
               </td>
             </tr>
             <tr v-if="filteredProducts.length === 0">
-              <td colspan="6" class="px-6 py-12 text-center text-on-surface-variant">
-                <span class="material-symbols-outlined text-4xl block mb-2 opacity-50">search_off</span>
-                ไม่พบผลลัพธ์สินค้าที่ตรงกับคำค้นหาของคุณ
+              <td colspan="6" class="px-6 py-12 text-center text-slate-400 dark:text-slate-500">
+                <span class="material-symbols-outlined text-4xl block mb-2 opacity-30">search_off</span>
+                <p class="text-xs font-black uppercase">ไม่พบผลลัพธ์ข้อมูลที่ต้องการ</p>
               </td>
             </tr>
           </tbody>
@@ -158,12 +177,10 @@ definePageMeta({
   layout: 'admin',
 })
 
-// 1. Fetch live products dynamically from Drizzle API (Nuxt auto-imports useFetch)
+// Fetch live products dynamically from database route
 const { data: result } = useFetch<any>('/api/products')
 
 const products = computed<any[]>(() => result.value?.products || [])
-
-// 2. Client-side search logic
 const searchQuery = ref('')
 
 const filteredProducts = computed(() => {
@@ -179,7 +196,7 @@ const filteredProducts = computed(() => {
   })
 })
 
-// 3. Aggregate metrics calculations
+// Aggregated counts calculations
 const totalValue = computed(() => {
   return products.value.reduce((acc, p) => acc + (p.price * p.stock), 0)
 })
@@ -190,7 +207,10 @@ const outOfStockCount = computed(() => {
 </script>
 
 <style scoped>
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+.icon-fill {
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
 }
 </style>

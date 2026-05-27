@@ -1,9 +1,28 @@
-import { pgTable, serial, text, varchar, integer, real, jsonb } from "drizzle-orm/pg-core";
+import { pgTable, serial, text, varchar, integer, real, jsonb, timestamp, boolean } from "drizzle-orm/pg-core";
 
 export const users = pgTable('users', {
   id: serial('id').primaryKey(),
-  fullName: text('full_name'),
+  fullName: text('full_name').notNull(),
   phone: varchar('phone', { length: 256 }),
+  email: text('email').notNull().unique(),
+  password: text('password').notNull(),
+  role: text('role').notNull(),           // 'pharmacist' or 'patient'
+  isActive: boolean('is_active').notNull().default(true),  // สถานะบัญชี
+  avatarUrl: text('avatar_url'),                           // URL รูปโปรไฟล์ (ไม่บังคับ)
+  createdAt: timestamp('created_at').notNull().defaultNow(),   // วันเวลาสมัครสมาชิก
+  updatedAt: timestamp('updated_at').notNull().defaultNow(),   // วันเวลาแก้ไขข้อมูลล่าสุด
+  lastLoginAt: timestamp('last_login_at'),                     // วันเวลาเข้าสู่ระบบล่าสุด
+
+  // Health Profile Fields
+  congenitalDiseases: text('congenital_diseases'),
+  drugAllergies: text('drug_allergies'),
+  weight: text('weight'),
+  height: text('height'),
+  bloodPressure: text('blood_pressure'),
+  heartRate: text('heart_rate'),
+  medications: text('medications'),
+  age: integer('age'),                    // อายุ (ปี)
+  gender: text('gender'),                 // เพศ: 'male' | 'female' | 'other'
 });
 
 export const customers = pgTable('customers', {
@@ -40,12 +59,15 @@ export const products = pgTable('products', {
 export const orders = pgTable('orders', {
   id: varchar('id', { length: 50 }).primaryKey(),
   customerId: varchar('customer_id', { length: 50 }).references(() => customers.id),
+  userId: integer('user_id'),  // references users.id for per-patient order history
   date: text('date').notNull(),
   status: text('status').notNull(),
   paymentMethod: text('payment_method').notNull(),
   items: jsonb('items').notNull(), // jsonb array of objects: { product_id: string, qty: number, price: number }
   total: integer('total').notNull(),
   shippingFee: integer('shipping_fee').notNull(),
+  shippingAddress: text('shipping_address'),  // delivery address
+  note: text('note'),                         // optional delivery note
 });
 
 export const symptomsFaq = pgTable('symptoms_faq', {

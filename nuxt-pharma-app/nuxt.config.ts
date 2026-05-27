@@ -1,4 +1,5 @@
 export default defineNuxtConfig({
+  compatibilityDate: '2026-05-24',
   ssr: true,
   typescript: {
     strict: true,
@@ -22,6 +23,12 @@ export default defineNuxtConfig({
     server: {
       middlewareMode: true,
     },
+    optimizeDeps: {
+      include: [
+        '@vue/devtools-core',
+        '@vue/devtools-kit',
+      ],
+    },
   },
   app: {
     head: {
@@ -31,7 +38,7 @@ export default defineNuxtConfig({
       ],
       link: [
         {
-          href: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap',
+          href: 'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap',
           rel: 'stylesheet',
         },
         {

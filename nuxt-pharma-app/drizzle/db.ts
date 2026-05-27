@@ -9,7 +9,13 @@ if (!connectionString) {
 
 // Disable prefetch as Supabase uses connection pooling (e.g. PgBouncer/Supabase pooler) 
 // which doesn't support prefetch protocol (prepared statements on session level).
-const client = postgres(connectionString, { prepare: false })
+// Also explicitly set search_path=public to avoid resolving 'users' to auth.users (Supabase internal table)
+const client = postgres(connectionString, {
+  prepare: false,
+  connection: {
+    search_path: 'public',  // Force Drizzle to always use public schema
+  },
+})
 
 export const db = drizzle(client)
 export { client }

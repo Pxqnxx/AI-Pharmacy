@@ -42,6 +42,11 @@ export default defineEventHandler(async (event) => {
       sku: p.id,
       stockLevel: p.stock,
       imageUrl: imagePlaceholders[p.category] || defaultImage,
+      brand: p.brand,
+      category: p.category,
+      price: p.price,
+      type: p.type,
+      unit: p.unit,
     }))
 
     return {

@@ -1,67 +1,98 @@
 <template>
-  <div class="bg-gradient-to-b from-surface to-surface-container-low min-h-screen flex items-center justify-center p-margin-mobile md:p-margin-desktop antialiased">
-    <main class="w-full max-w-md flex flex-col items-center">
-      <!-- Success Graphic -->
-      <div class="mb-6 relative flex items-center justify-center">
-        <div class="absolute w-24 h-24 bg-primary-container rounded-full animate-ping opacity-30"></div>
-        <div class="w-20 h-20 bg-primary-container rounded-full flex items-center justify-center relative z-10 shadow-sm">
-          <span class="material-symbols-outlined text-primary" style="font-size: 48px; font-variation-settings: 'FILL' 1;">check_circle</span>
+  <div class="min-h-screen bg-gradient-to-br from-slate-50 via-teal-50/30 to-emerald-50/20 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 flex items-center justify-center p-5 antialiased" style="font-family: 'Plus Jakarta Sans', sans-serif;">
+    <main class="w-full max-w-sm flex flex-col items-center animate-slideUp">
+
+      <!-- Success Animation -->
+      <div class="mb-8 relative flex items-center justify-center">
+        <div class="absolute w-32 h-32 bg-teal-400/15 dark:bg-teal-500/10 rounded-full animate-ping" style="animation-duration: 2s;"></div>
+        <div class="absolute w-24 h-24 bg-emerald-400/20 dark:bg-emerald-500/10 rounded-full"></div>
+        <div class="relative z-10 w-20 h-20 bg-gradient-to-br from-teal-500 to-emerald-500 rounded-3xl flex items-center justify-center shadow-2xl shadow-teal-500/30 rotate-3 hover:rotate-0 transition-transform duration-500">
+          <span class="material-symbols-outlined text-white icon-fill" style="font-size: 40px;">check_circle</span>
         </div>
       </div>
-      <!-- Header Text -->
-      <h1 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg text-on-surface text-center mb-2">สั่งซื้อสำเร็จ!</h1>
-      <p class="font-body-md text-body-md text-on-surface-variant text-center mb-8">ยาของคุณกำลังจัดส่ง</p>
-      <!-- Digital Receipt Card -->
-      <div class="w-full bg-surface-container-lowest rounded-xl shadow-md border border-surface-variant overflow-hidden mb-8 relative">
+
+      <!-- Title -->
+      <h1 class="text-2xl font-black text-slate-900 dark:text-white text-center mb-2 tracking-tight">สั่งซื้อสำเร็จ! 🎉</h1>
+      <p class="text-sm text-slate-400 dark:text-slate-500 text-center mb-8 leading-relaxed">
+        {{ route.query.paymentMethod === 'COD'
+          ? 'ยาของคุณกำลังเตรียมจัดส่ง รอชำระเงินปลายทาง'
+          : 'ยาของคุณกำลังถูกจัดส่ง ชำระเงินสำเร็จแล้ว' }}
+      </p>
+
+      <!-- Receipt Card -->
+      <div class="w-full bg-white dark:bg-slate-900 rounded-3xl shadow-2xl shadow-slate-200/60 dark:shadow-slate-900/80 border border-slate-100 dark:border-slate-800 overflow-hidden mb-6">
+
+        <!-- Receipt Header -->
+        <div class="bg-gradient-to-r from-teal-500 to-emerald-500 px-6 py-5">
+          <div class="flex justify-between items-center">
+            <div>
+              <p class="text-teal-100 text-[10px] font-bold uppercase tracking-widest">ใบสั่งซื้อ</p>
+              <p class="text-white font-black text-lg">{{ order.orderNumber }}</p>
+            </div>
+            <div class="text-right">
+              <p class="text-teal-100 text-[10px] font-bold uppercase tracking-widest">วันที่</p>
+              <p class="text-white font-bold text-sm">{{ order.date }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dashed separator -->
+        <div class="relative py-3 px-6 flex items-center">
+          <div class="w-5 h-5 bg-slate-50 dark:bg-slate-950 rounded-full absolute -left-2.5 border border-slate-100 dark:border-slate-800"></div>
+          <div class="flex-1 border-t-2 border-dashed border-slate-200 dark:border-slate-700"></div>
+          <div class="w-5 h-5 bg-slate-50 dark:bg-slate-950 rounded-full absolute -right-2.5 border border-slate-100 dark:border-slate-800"></div>
+        </div>
+
         <!-- Receipt Content -->
-        <div class="p-6 md:p-8 flex flex-col gap-6">
-          <!-- Header Info -->
-          <div class="flex flex-col gap-3">
-            <div class="flex justify-between items-center">
-              <span class="font-body-md text-body-md text-on-surface-variant">เลขที่ใบสั่งซื้อ</span>
-              <span class="font-label-md text-label-md text-on-surface font-semibold">{{ order.orderNumber }}</span>
-            </div>
-            <div class="flex justify-between items-center">
-              <span class="font-body-md text-body-md text-on-surface-variant">วันที่</span>
-              <span class="font-label-md text-label-md text-on-surface font-semibold">{{ order.date }}</span>
-            </div>
-          </div>
-          <div class="border-t border-dashed border-outline-variant w-full"></div>
+        <div class="px-6 pb-6 space-y-5">
           <!-- Items -->
-          <div class="flex flex-col gap-3">
-            <h2 class="font-label-sm text-label-sm text-outline uppercase tracking-wider mb-1">รายการสินค้า</h2>
-            <div v-for="item in order.items" :key="item.name" class="flex justify-between items-start">
-              <span class="font-body-md text-body-md text-on-surface-variant flex-1 pr-4">{{ item.name }}</span>
-              <span class="font-label-md text-label-md text-on-surface shrink-0">--</span>
-            </div>
-          </div>
-          <div class="border-t border-dashed border-outline-variant w-full"></div>
-          <!-- Total & Status -->
-          <div class="flex flex-col gap-4">
-            <div class="flex justify-between items-center">
-              <span class="font-headline-md text-headline-md text-on-surface">ยอดรวม</span>
-              <span class="font-headline-md text-headline-md text-primary">{{ order.total }}</span>
-            </div>
-            <div class="flex justify-between items-center bg-surface-container-low p-3 rounded-lg border border-surface-variant">
-              <span class="font-body-md text-body-md text-on-surface-variant">สถานะ</span>
-              <div class="flex items-center gap-1.5 text-primary">
-                <span class="material-symbols-outlined" style="font-size: 18px; font-variation-settings: 'FILL' 1;">check_circle</span>
-                <span class="font-label-md text-label-md font-semibold">{{ order.statusText }}</span>
+          <div>
+            <p class="text-[10px] text-slate-400 uppercase tracking-widest font-bold mb-3">รายการสินค้า</p>
+            <div v-for="item in order.items" :key="item.name" class="flex justify-between items-center py-2">
+              <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 bg-teal-50 dark:bg-teal-950/30 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <span class="material-symbols-outlined text-teal-500 text-[16px] icon-fill">medication</span>
+                </div>
+                <p class="text-xs font-semibold text-slate-700 dark:text-slate-300">{{ item.name }}</p>
               </div>
             </div>
           </div>
+
+          <!-- Divider -->
+          <div class="border-t border-dashed border-slate-200 dark:border-slate-700"></div>
+
+          <!-- Total -->
+          <div class="flex justify-between items-center">
+            <span class="text-sm font-bold text-slate-700 dark:text-slate-300">ยอดรวมทั้งหมด</span>
+            <span class="text-xl font-black text-teal-600 dark:text-teal-400">{{ order.total }}</span>
+          </div>
+
+          <!-- Status -->
+          <div class="flex items-center justify-between bg-slate-50 dark:bg-slate-800 rounded-2xl px-4 py-3">
+            <span class="text-xs text-slate-500 dark:text-slate-400 font-medium">สถานะคำสั่งซื้อ</span>
+            <div class="inline-flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400">
+              <span class="material-symbols-outlined text-[16px] icon-fill">check_circle</span>
+              <span class="text-xs font-black">{{ order.statusText }}</span>
+            </div>
+          </div>
         </div>
-        <!-- Decorative zig-zag bottom (using css clip-path for a modern receipt look) -->
-        <div class="h-3 w-full bg-surface-container-low absolute bottom-0 left-0" style="clip-path: polygon(0% 100%, 2.5% 0%, 5% 100%, 7.5% 0%, 10% 100%, 12.5% 0%, 15% 100%, 17.5% 0%, 20% 100%, 22.5% 0%, 25% 100%, 27.5% 0%, 30% 100%, 32.5% 0%, 35% 100%, 37.5% 0%, 40% 100%, 42.5% 0%, 45% 100%, 47.5% 0%, 50% 100%, 52.5% 0%, 55% 100%, 57.5% 0%, 60% 100%, 62.5% 0%, 65% 100%, 67.5% 0%, 70% 100%, 72.5% 0%, 75% 100%, 77.5% 0%, 80% 100%, 82.5% 0%, 85% 100%, 87.5% 0%, 90% 100%, 92.5% 0%, 95% 100%, 97.5% 0%, 100% 100%);"></div>
       </div>
-      <!-- Actions Container -->
-      <div class="w-full flex flex-col gap-3">
-        <button class="w-full bg-primary text-on-primary rounded-full py-4 px-6 font-label-md text-label-md shadow-sm transition-transform active:scale-[0.98] hover:bg-primary-container hover:text-on-primary-container flex items-center justify-center gap-2">
-          <span class="material-symbols-outlined" style="font-size: 20px;">local_shipping</span>
-          ดูสถานะการส่ง
+
+      <!-- CTA Buttons -->
+      <div class="w-full space-y-3">
+        <button
+          @click="goToOrders"
+          class="w-full bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-400 hover:to-emerald-400 text-white py-4 px-6 rounded-2xl font-black text-sm shadow-xl shadow-teal-500/25 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
+        >
+          <span class="material-symbols-outlined text-[18px]">local_shipping</span>
+          ดูสถานะการจัดส่ง
         </button>
-        <button class="w-full bg-transparent border-2 border-outline-variant text-on-surface-variant hover:border-outline hover:text-on-surface rounded-full py-4 px-6 font-label-md text-label-md transition-colors flex items-center justify-center gap-2">
-          กลับสู่หน้าหลัก (Home)
+        <button
+          @click="goHome"
+          class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-teal-300 dark:hover:border-teal-700 text-slate-600 dark:text-slate-300 hover:text-teal-600 dark:hover:text-teal-400 py-4 px-6 rounded-2xl font-bold text-sm transition-all active:scale-[0.98] flex items-center justify-center gap-2"
+        >
+          <span class="material-symbols-outlined text-[16px]">home</span>
+          กลับหน้าหลัก
         </button>
       </div>
     </main>
@@ -69,25 +100,39 @@
 </template>
 
 <script setup lang="ts">
-const order = {
-  orderNumber: '#PAI-9982',
-  date: '12 Oct 2023',
-  items: [
-    {
-      name: 'Paracetamol',
-    },
-    {
-      name: 'Throat Lozenges',
-    },
-  ],
-  total: '70 บาท',
-  status: 'paid',
-  statusText: 'ชำระเงินแล้ว',
-}
+import { computed } from 'vue'
+import { useRoute, navigateTo } from '#app'
 
-definePageMeta({
-  layout: 'default',
+const route = useRoute()
+
+const orderId = computed(() => {
+  const q = route.query.orderId as string
+  if (!q) return '#PAI-9982'
+  return q.startsWith('#') ? q : `#${q}`
 })
+
+const total = computed(() => {
+  const t = route.query.total as string
+  if (t) return `฿${parseFloat(t).toLocaleString()}`
+  return '฿70'
+})
+
+const dateStr = computed(() => {
+  const d = new Date()
+  const monthsThai = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.']
+  return `${d.getDate()} ${monthsThai[d.getMonth()]} ${d.getFullYear() + 543}`
+})
+
+const order = computed(() => ({
+  orderNumber: orderId.value,
+  date: dateStr.value,
+  items: [{ name: 'เวชภัณฑ์และยากลุ่มรักษาอาการตามแพทย์สั่ง' }],
+  total: total.value,
+  statusText: route.query.paymentMethod === 'COD' ? 'รอชำระเงินปลายทาง' : 'ชำระเงินแล้ว',
+}))
+
+const goToOrders = async () => await navigateTo('/orders')
+const goHome = async () => await navigateTo('/chat')
 </script>
 
 <style>

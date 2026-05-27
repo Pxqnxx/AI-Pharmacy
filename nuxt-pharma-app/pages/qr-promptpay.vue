@@ -1,142 +1,197 @@
 <template>
-  <div>
-    <!-- Header Section -->
-    <div class="mb-8">
-      <NuxtLink to="/orders" class="inline-flex items-center gap-1 text-primary hover:underline font-label-md text-label-md mb-3">
-        <span class="material-symbols-outlined text-[16px]">arrow_back</span>
-        กลับไปที่รายการคำสั่งซื้อ
-      </NuxtLink>
-      <h2 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg mb-2">ชำระเงินคำสั่งซื้อ</h2>
-      <p class="font-body-md text-body-md text-on-surface-variant">สแกนรหัสคิวอาร์เพื่อชำระเงินผ่านระบบ PromptPay ได้อย่างปลอดภัย</p>
-    </div>
+  <NuxtLayout :name="layoutName">
+    <div class="space-y-6 animate-slideUp" style="font-family: 'Plus Jakarta Sans', sans-serif;">
 
-    <!-- Flex Main Canvas (Layout checkout details) -->
-    <div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
-      <!-- Left Column: QR promptpay visual card (7 columns) -->
-      <div class="md:col-span-7 space-y-6">
-        <div class="bg-surface-container-lowest border border-outline-variant rounded-2xl p-6 shadow-sm flex flex-col items-center text-center relative overflow-hidden">
-          <!-- Promptpay logo mockup -->
-          <div class="w-full flex items-center justify-center gap-2 mb-4 py-2 bg-sky-950 text-white rounded-xl">
-            <span class="font-bold text-lg tracking-wider">Prompt Pay</span>
-            <div class="w-2.5 h-2.5 rounded-full bg-emerald-400"></div>
-          </div>
+      <!-- Header -->
+      <div>
+        <NuxtLink to="/checkout" class="inline-flex items-center gap-1.5 text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 text-xs font-bold mb-3 transition-colors group">
+          <span class="material-symbols-outlined text-[16px] group-hover:-translate-x-0.5 transition-transform">arrow_back</span>
+          กลับไปแก้ไขรายการสั่งซื้อ
+        </NuxtLink>
+        <h2 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">ชำระเงินค่ายา</h2>
+        <p class="text-xs text-slate-400 dark:text-slate-500 mt-1">สแกน QR Code ด้วยแอปพลิเคชันธนาคารเพื่อชำระเงินผ่าน PromptPay</p>
+      </div>
 
-          <!-- Timer Countdown warning -->
-          <p class="font-label-sm text-label-sm text-on-surface-variant mb-2">รหัสคิวอาร์จะหมดอายุใน</p>
-          <div class="font-display-lg text-headline-lg font-bold text-primary mb-6 flex items-center gap-1 bg-primary/10 px-4 py-1.5 rounded-full">
-            <span class="material-symbols-outlined text-[20px] animate-spin">hourglass_empty</span>
-            09:42 นาที
-          </div>
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
 
-          <!-- QR code image mockup (generated beautiful mock using CSS/SVG structures) -->
-          <div class="w-56 h-56 bg-white border border-outline-variant/60 rounded-xl p-4 flex flex-col items-center justify-center relative shadow-sm group">
-            <!-- Simulated QR code pixels pattern -->
-            <div class="w-full h-full flex flex-col justify-between items-center opacity-85">
-              <div v-for="n in 6" :key="n" class="w-full flex justify-between">
-                <div v-for="m in 6" :key="m" class="w-6 h-6 border-2 border-slate-900 rounded-sm" :class="(n + m) % 2 === 0 ? 'bg-slate-900' : 'bg-transparent'"></div>
+        <!-- QR Card -->
+        <div class="md:col-span-7">
+          <div class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-3xl p-6 flex flex-col items-center shadow-xl shadow-slate-200/40 dark:shadow-slate-900/60">
+
+            <!-- PromptPay Header -->
+            <div class="w-full flex items-center justify-center gap-2.5 mb-5 py-3 bg-gradient-to-r from-[#00274c] to-[#003d75] text-white rounded-2xl shadow-md shadow-[#00274c]/30">
+              <span class="font-black text-sm tracking-widest uppercase">Prompt Pay</span>
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            </div>
+
+            <!-- Timer -->
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">รหัส QR จะหมดอายุภายใน</p>
+            <div class="inline-flex items-center gap-2 bg-teal-50 dark:bg-teal-950/30 text-teal-700 dark:text-teal-400 border border-teal-200/50 dark:border-teal-800/40 px-5 py-2 rounded-full mb-6 font-black text-sm">
+              <span class="material-symbols-outlined text-[18px]" style="animation: spin 2s linear infinite;">hourglass_empty</span>
+              09:59 นาที
+            </div>
+
+            <!-- QR Code -->
+            <div class="relative mb-6">
+              <div class="absolute inset-0 bg-gradient-to-br from-teal-400/20 to-emerald-400/20 rounded-3xl blur-xl scale-110"></div>
+              <div class="relative w-56 h-56 bg-white border-4 border-white rounded-3xl p-3 shadow-2xl shadow-teal-500/15">
+                <img
+                  :src="`https://promptpay.io/0888888888/${totalQuery}.png`"
+                  alt="PromptPay QR Code"
+                  class="w-full h-full object-contain rounded-xl"
+                />
               </div>
             </div>
-            <!-- Center branding logo -->
-            <div class="absolute inset-0 m-auto w-10 h-10 bg-white border border-outline-variant/50 rounded-lg flex items-center justify-center text-primary shadow-md">
-              <span class="material-symbols-outlined text-[24px] icon-fill">medical_services</span>
+
+            <!-- Amount -->
+            <div class="text-center mb-5">
+              <p class="text-3xl font-black text-slate-900 dark:text-white">฿{{ totalQuery.toLocaleString('th-TH', { minimumFractionDigits: 2 }) }}</p>
+              <p class="text-xs text-slate-400 dark:text-slate-500 mt-1">อ้างอิงคำสั่งซื้อ: <span class="font-bold text-slate-600 dark:text-slate-300">{{ orderIdQuery }}</span></p>
+            </div>
+
+            <!-- Info Notice -->
+            <div class="flex items-start gap-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200/60 dark:border-slate-700/60 p-4 rounded-2xl w-full text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+              <span class="material-symbols-outlined text-teal-500 text-[18px] flex-shrink-0 mt-0.5">info</span>
+              <span>ระบบจัดทำ QR Code สำหรับการชำระเงินเสร็จสมบูรณ์ เมื่อทำรายการสำเร็จระบบจะอัปเดตสถานะคำสั่งซื้อโดยอัตโนมัติ</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="md:col-span-5 space-y-5">
+
+          <!-- Order Summary -->
+          <div class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-3xl p-5 shadow-sm">
+            <h3 class="text-xs font-black text-slate-900 dark:text-white uppercase tracking-widest mb-4 pb-3 border-b border-slate-100 dark:border-slate-800">สรุปรายการจ่ายบิล</h3>
+            <div class="space-y-3 text-xs">
+              <div class="flex justify-between items-start gap-4">
+                <div>
+                  <p class="font-bold text-slate-700 dark:text-slate-200">ชุดเวชภัณฑ์และยารักษาอาการ</p>
+                  <p class="text-[10px] text-slate-400 mt-0.5">แนะนำโดยเภสัชกรอัจฉริยะ PAI</p>
+                </div>
+                <span class="font-black text-slate-800 dark:text-slate-100 flex-shrink-0">฿{{ subtotalPrice.toLocaleString('th-TH', { minimumFractionDigits: 2 }) }}</span>
+              </div>
+              <div class="border-t border-dashed border-slate-200 dark:border-slate-700 pt-3 space-y-2">
+                <div class="flex justify-between text-slate-400">
+                  <span>ค่ายารวม</span><span>฿{{ subtotalPrice.toLocaleString('th-TH', { minimumFractionDigits: 2 }) }}</span>
+                </div>
+                <div class="flex justify-between text-slate-400">
+                  <span>ค่าจัดส่งและแพ็กยา</span><span>฿{{ shippingFeeQuery.toLocaleString('th-TH', { minimumFractionDigits: 2 }) }}</span>
+                </div>
+                <div class="flex justify-between font-black text-sm pt-2 border-t border-slate-100 dark:border-slate-800">
+                  <span class="text-teal-600 dark:text-teal-400">ยอดชำระสุทธิ</span>
+                  <span class="text-teal-600 dark:text-teal-400">฿{{ totalQuery.toLocaleString('th-TH', { minimumFractionDigits: 2 }) }}</span>
+                </div>
+              </div>
             </div>
           </div>
 
-          <!-- Promptpay text and scan prompt -->
-          <div class="mt-6 space-y-1">
-            <h4 class="font-headline-md text-headline-md text-on-surface font-bold">฿ 1,250.00</h4>
-            <p class="font-label-sm text-label-sm text-on-surface-variant">รหัสคำสั่งซื้อ: #PAI-88291</p>
-          </div>
+          <!-- Payment Steps -->
+          <div class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-3xl p-5 shadow-sm">
+            <h3 class="text-xs font-black text-slate-900 dark:text-white uppercase tracking-widest mb-4">สถานะการชำระเงิน</h3>
+            <div class="space-y-4">
 
-          <!-- Helper information -->
-          <div class="mt-6 flex items-center gap-2 text-[11px] font-label-sm bg-surface-container-high/30 p-3 rounded-lg w-full text-left">
-            <span class="material-symbols-outlined text-primary text-[18px]">info</span>
-            <span>หลังจากชำระเงินเรียบร้อยแล้ว ระบบจะตรวจสอบยอดสแกนและยืนยันการทำสั่งซื้อโดยอัตโนมัติภายใน 10 วินาที</span>
+              <!-- Step 1 -->
+              <div class="flex gap-3">
+                <div class="flex flex-col items-center">
+                  <div class="w-8 h-8 rounded-full bg-gradient-to-br from-teal-500 to-emerald-500 flex items-center justify-center flex-shrink-0 shadow-lg shadow-teal-500/20">
+                    <span class="material-symbols-outlined text-white text-[14px] icon-fill">done</span>
+                  </div>
+                  <div class="w-0.5 h-full bg-slate-100 dark:bg-slate-800 mt-2 min-h-[20px]"></div>
+                </div>
+                <div class="pb-4">
+                  <p class="text-xs font-bold text-teal-600 dark:text-teal-400">สร้างคำสั่งซื้อสำเร็จ</p>
+                  <p class="text-[10px] text-slate-400 mt-0.5">ระบบบันทึกออร์เดอร์เข้าสู่คลังเรียบร้อย</p>
+                </div>
+              </div>
+
+              <!-- Step 2 -->
+              <div class="flex gap-3">
+                <div class="flex flex-col items-center">
+                  <div
+                    class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 shadow-sm"
+                    :class="paymentSuccess ? 'bg-gradient-to-br from-teal-500 to-emerald-500 shadow-teal-500/20' : 'bg-teal-500/20 border-2 border-teal-500'"
+                  >
+                    <span v-if="paymentSuccess" class="material-symbols-outlined text-white text-[14px] icon-fill">done</span>
+                    <span v-else class="w-2.5 h-2.5 rounded-full bg-teal-500 animate-pulse inline-block"></span>
+                  </div>
+                  <div class="w-0.5 h-full bg-slate-100 dark:bg-slate-800 mt-2 min-h-[20px]"></div>
+                </div>
+                <div class="pb-4">
+                  <p class="text-xs font-bold" :class="paymentSuccess ? 'text-teal-600 dark:text-teal-400' : 'text-slate-700 dark:text-slate-200'">
+                    {{ paymentSuccess ? 'สแกนสำเร็จ ตรวจพบยอดเงิน' : 'รอยืนยันการสแกน QR' }}
+                  </p>
+                  <p class="text-[10px] text-slate-400 mt-0.5">
+                    {{ paymentSuccess ? 'ระบบธนาคารได้รับการชำระเงินแล้ว' : 'กำลังสื่อสารกับ PromptPay...' }}
+                  </p>
+                </div>
+              </div>
+
+              <!-- Step 3 -->
+              <div class="flex gap-3">
+                <div class="flex flex-col items-center">
+                  <div
+                    class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
+                    :class="paymentSuccess ? 'bg-gradient-to-br from-teal-500 to-emerald-500 shadow-lg shadow-teal-500/20' : 'bg-slate-100 dark:bg-slate-800'"
+                  >
+                    <span v-if="paymentSuccess" class="material-symbols-outlined text-white text-[14px] icon-fill">done</span>
+                  </div>
+                </div>
+                <div>
+                  <p class="text-xs font-bold" :class="paymentSuccess ? 'text-teal-600 dark:text-teal-400' : 'text-slate-400 dark:text-slate-500'">ชำระเงินเสร็จสิ้น & เตรียมจัดส่ง</p>
+                  <p class="text-[10px] text-slate-400 mt-0.5">ทีมเภสัชกรเตรียมแพ็กยาและนำส่ง</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-
-      <!-- Right Column: Order brief details (5 columns) -->
-      <div class="md:col-span-5 space-y-6">
-        <!-- Order Brief -->
-        <div class="bg-surface-container-lowest border border-outline-variant rounded-2xl p-6 shadow-sm">
-          <h3 class="font-label-md text-label-md font-bold text-on-surface mb-4 uppercase tracking-wider border-b border-outline-variant pb-2">สรุปคำสั่งซื้อ</h3>
-          
-          <div class="space-y-4">
-            <div class="flex items-start justify-between gap-4">
-              <div>
-                <h4 class="font-label-md text-label-md font-bold text-on-surface">พาราเซตามอล 500มก.</h4>
-                <p class="font-label-sm text-label-sm text-on-surface-variant">2 กล่อง</p>
-              </div>
-              <span class="font-label-md text-label-md text-on-surface">฿ 300.00</span>
-            </div>
-            <div class="flex items-start justify-between gap-4">
-              <div>
-                <h4 class="font-label-md text-label-md font-bold text-on-surface">ยาแก้ไอ ตราเภสัชกร</h4>
-                <p class="font-label-sm text-label-sm text-on-surface-variant">3 ขวด</p>
-              </div>
-              <span class="font-label-md text-label-md text-on-surface">฿ 450.00</span>
-            </div>
-            <div class="flex items-start justify-between gap-4">
-              <div>
-                <h4 class="font-label-md text-label-md font-bold text-on-surface">แผ่นประคบร้อนลดปวด</h4>
-                <p class="font-label-sm text-label-sm text-on-surface-variant">5 แผ่น</p>
-              </div>
-              <span class="font-label-md text-label-md text-on-surface">฿ 500.00</span>
-            </div>
-
-            <!-- Totals billing divider -->
-            <div class="border-t border-outline-variant/60 pt-4 space-y-2">
-              <div class="flex justify-between font-label-sm text-label-sm text-on-surface-variant">
-                <span>ยอดเงินสินค้า</span>
-                <span>฿ 1,250.00</span>
-              </div>
-              <div class="flex justify-between font-label-sm text-label-sm text-on-surface-variant">
-                <span>ค่าบริการและจัดส่ง</span>
-                <span class="text-primary font-bold">ฟรี</span>
-              </div>
-              <div class="flex justify-between font-headline-md text-headline-md text-on-surface pt-2 border-t border-dashed border-outline-variant/40">
-                <span class="font-bold text-primary">ยอดชำระสุทธิ</span>
-                <span class="font-bold text-primary">฿ 1,250.00</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Step flow visual -->
-        <div class="bg-surface-container-lowest border border-outline-variant rounded-2xl p-6 shadow-sm">
-          <h3 class="font-label-md text-label-md font-bold text-on-surface mb-4 uppercase tracking-wider">สถานะการชำระเงิน</h3>
-          
-          <div class="relative pl-6 border-l-2 border-primary/20 space-y-6">
-            <!-- Step 1: Done -->
-            <div class="relative">
-              <div class="absolute -left-[31px] top-0.5 w-4 h-4 rounded-full bg-primary flex items-center justify-center text-white border-2 border-white shadow-sm">
-                <span class="material-symbols-outlined text-[10px] icon-fill">done</span>
-              </div>
-              <h4 class="font-label-md text-label-md font-bold text-primary">สร้างคำสั่งซื้อสำเร็จ</h4>
-              <p class="font-label-sm text-label-sm text-on-surface-variant">ระบบเชื่อมโยงตะกร้ายารวมเสร็จสิ้น</p>
-            </div>
-            <!-- Step 2: Active -->
-            <div class="relative">
-              <div class="absolute -left-[31px] top-0.5 w-4 h-4 rounded-full bg-primary flex items-center justify-center text-white border-2 border-white shadow-sm animate-pulse"></div>
-              <h4 class="font-label-md text-label-md font-bold text-primary">รอยืนยันยอดสแกนคิวอาร์</h4>
-              <p class="font-label-sm text-label-sm text-on-surface-variant">ระบบธนาคารกำลังรอเชื่อมต่อการจ่าย</p>
-            </div>
-            <!-- Step 3: Pending -->
-            <div class="relative">
-              <div class="absolute -left-[31px] top-0.5 w-4 h-4 rounded-full bg-slate-200 border-2 border-white shadow-sm"></div>
-              <h4 class="font-label-md text-label-md text-on-surface-variant">ชำระเงินเสร็จสิ้น & จัดส่งยา</h4>
-              <p class="font-label-sm text-label-sm text-on-surface-variant/60">เตรียมดำเนินการแพ็กและจัดส่งทันที</p>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
-  </div>
+  </NuxtLayout>
 </template>
 
 <script setup lang="ts">
-definePageMeta({
-  layout: 'default',
+import { ref, computed, onMounted } from 'vue'
+import { useRoute, navigateTo } from '#app'
+import { useAuth } from '~/composables/useAuth'
+
+definePageMeta({ layout: false })
+
+const route = useRoute()
+const { getSession } = useAuth()
+const session = getSession()
+
+if (!session && process.client) await navigateTo('/')
+
+const layoutName = computed(() => session?.role === 'pharmacist' ? 'admin' : 'user')
+
+const orderIdQuery = computed(() => (route.query.orderId as string) || 'PAI-88291')
+const totalQuery = computed(() => {
+  const q = route.query.total as string
+  if (q) return parseFloat(q)
+  return 1250
+})
+const shippingFeeQuery = computed(() => 50)
+const subtotalPrice = computed(() => totalQuery.value - shippingFeeQuery.value)
+
+const paymentSuccess = ref(false)
+
+onMounted(() => {
+  if (process.client) {
+    setTimeout(() => {
+      paymentSuccess.value = true
+      setTimeout(async () => {
+        await navigateTo(`/order-success?orderId=${orderIdQuery.value}&total=${totalQuery.value}`)
+      }, 1800)
+    }, 3800)
+  }
 })
 </script>
+
+<style scoped>
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+.icon-fill { font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+@keyframes spin { to { transform: rotate(360deg); } }
+</style>

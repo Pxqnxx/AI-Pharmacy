@@ -19,7 +19,7 @@
         <!-- User Message -->
         <div class="flex items-start gap-4 self-end max-w-[85%] sm:max-w-2xl">
           <div class="bg-surface-container-high text-on-surface p-4 rounded-2xl rounded-tr-none shadow-sm border border-outline-variant">
-            <p class="font-body-md text-body-md">{{ chatMessages[0].content }}</p>
+            <p class="font-body-md text-body-md">{{ chatMessages[0]?.content }}</p>
           </div>
         </div>
       </div>
@@ -32,7 +32,7 @@
           </div>
           <div class="bg-primary text-on-primary p-5 rounded-2xl rounded-tl-none shadow-md">
             <p class="font-body-md text-body-md leading-relaxed">
-              {{ chatMessages[1].content }}
+              {{ chatMessages[1]?.content }}
             </p>
           </div>
         </div>
@@ -112,7 +112,23 @@
 </template>
 
 <script setup lang="ts">
-const chatMessages = [
+interface ChatMessage {
+  id: string
+  role: 'user' | 'bot'
+  content: string
+}
+
+interface Medicine {
+  id: string
+  name: string
+  description: string
+  price: string
+  imageUrl: string
+  status: string
+  statusText: string
+}
+
+const chatMessages: ChatMessage[] = [
   {
     id: '1',
     role: 'user',
@@ -125,7 +141,7 @@ const chatMessages = [
   },
 ]
 
-const medicines = [
+const medicines: Medicine[] = [
   {
     id: '1',
     name: 'Paracetamol 500mg',
@@ -146,9 +162,6 @@ const medicines = [
   },
 ]
 
-definePageMeta({
-  layout: 'default',
-})
 </script>
 
 <style>

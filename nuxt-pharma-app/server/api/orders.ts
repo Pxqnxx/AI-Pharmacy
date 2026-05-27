@@ -1,49 +1,175 @@
-import { defineEventHandler } from 'h3'
+import { defineEventHandler, readBody, getMethod, getRequestHeader } from 'h3'
 import { db } from '../../drizzle/db'
 import { orders as ordersTable, products as productsTable } from '../../drizzle/schema'
-import { desc } from 'drizzle-orm'
+import { desc, eq, sql } from 'drizzle-orm'
 
 export default defineEventHandler(async (event) => {
+  const method = getMethod(event)
+
+  // ─── POST METHOD: Place a new order + decrement stock atomically ────────────
+  if (method === 'POST') {
+    try {
+      const body = await readBody(event)
+      const { customerId, paymentMethod, items, total, shippingFee, shippingAddress, note } = body
+
+      // Resolve user ID from request header (set by checkout page)
+      const userIdHeader = getRequestHeader(event, 'x-user-id')
+      const userId = userIdHeader ? parseInt(userIdHeader, 10) || null : null
+
+      const orderId = 'PAI-' + Math.floor(Math.random() * 900000 + 100000).toString()
+      const dateStr = new Date().toISOString().split('T')[0]
+
+      const itemsList: Array<{ product_id: string; qty: number; price: number }> = items || []
+
+      // Use a DB transaction: decrement stock for every item, then insert order
+      await db.transaction(async (tx) => {
+        for (const item of itemsList) {
+          if (!item.product_id || !item.qty || item.qty <= 0) continue
+
+          // Fetch current product to validate stock
+          const [product] = await tx
+            .select({ id: productsTable.id, stock: productsTable.stock, sold: productsTable.sold })
+            .from(productsTable)
+            .where(eq(productsTable.id, item.product_id))
+            .limit(1)
+
+          if (!product) {
+            throw new Error(`ไม่พบสินค้า ID: ${item.product_id}`)
+          }
+
+          if (product.stock < item.qty) {
+            throw new Error(`สินค้า "${item.product_id}" มีสต็อกไม่เพียงพอ (เหลือ ${product.stock} ชิ้น แต่สั่ง ${item.qty})`)
+          }
+
+          // Decrement stock, increment sold count
+          await tx
+            .update(productsTable)
+            .set({
+              stock: sql`${productsTable.stock} - ${item.qty}`,
+              sold: sql`${productsTable.sold} + ${item.qty}`,
+            })
+            .where(eq(productsTable.id, item.product_id))
+        }
+
+        // Insert the order with userId for per-user history
+        await tx.insert(ordersTable).values({
+          id: orderId,
+          customerId: customerId || null,
+          userId: userId,
+          date: dateStr,
+          status: 'pending',
+          paymentMethod: paymentMethod || 'PromptPay',
+          items: itemsList,
+          total: total || 0,
+          shippingFee: shippingFee || 50,
+          shippingAddress: shippingAddress || null,
+          note: note || null,
+        })
+      })
+
+      return {
+        success: true,
+        orderId,
+      }
+    } catch (err: any) {
+      console.error('API Error POST /api/orders:', err)
+      return {
+        success: false,
+        error: err.message || 'Failed to place order in database',
+      }
+    }
+  }
+
+  // ─── PATCH METHOD: Update order status (Pharmacist only) ───────────────────
+  if (method === 'PATCH') {
+    try {
+      const userRoleHeader = getRequestHeader(event, 'x-user-role')
+      if (userRoleHeader !== 'pharmacist') {
+        return {
+          success: false,
+          error: 'ไม่มีสิทธิ์ในการเข้าถึงการจัดการนี้',
+        }
+      }
+
+      const body = await readBody(event)
+      const { orderId, status } = body
+
+      if (!orderId || !status) {
+        return {
+          success: false,
+          error: 'ข้อมูลไม่ครบถ้วน',
+        }
+      }
+
+      // Update order status in DB
+      await db
+        .update(ordersTable)
+        .set({ status })
+        .where(eq(ordersTable.id, orderId))
+
+      return {
+        success: true,
+      }
+    } catch (err: any) {
+      console.error('API Error PATCH /api/orders:', err)
+      return {
+        success: false,
+        error: err.message || 'Failed to update order status',
+      }
+    }
+  }
+
+  // ─── GET METHOD: Fetch orders, optionally filtered by userId ──────────────
   try {
-    // 1. Fetch all orders and products from database
-    const allOrders = await db
-      .select()
-      .from(ordersTable)
-      .orderBy(desc(ordersTable.date), desc(ordersTable.id))
+    const userIdHeader = getRequestHeader(event, 'x-user-id')
+    const userRoleHeader = getRequestHeader(event, 'x-user-role')
+    const filterUserId = userIdHeader ? parseInt(userIdHeader, 10) || null : null
 
-    const allProducts = await db
-      .select()
-      .from(productsTable)
+    // Fetch orders — if a valid userId is present AND user is NOT a pharmacist, filter to that user only
+    let allOrders
+    if (filterUserId && userRoleHeader !== 'pharmacist') {
+      allOrders = await db
+        .select()
+        .from(ordersTable)
+        .where(eq(ordersTable.userId, filterUserId))
+        .orderBy(desc(ordersTable.date), desc(ordersTable.id))
+    } else {
+      allOrders = await db
+        .select()
+        .from(ordersTable)
+        .orderBy(desc(ordersTable.date), desc(ordersTable.id))
+    }
 
-    // Create a quick lookup for product names
-    const productLookup: Record<string, string> = {}
+    const allProducts = await db.select().from(productsTable)
+
+    // Product name lookup map
+    const productLookup: Record<string, { name: string; image?: string; category: string }> = {}
     allProducts.forEach((p) => {
-      productLookup[p.id] = p.name
+      productLookup[p.id] = { name: p.name, category: p.category }
     })
 
-    // 2. Map database status to UI tab values
-    // DB values: 'delivered', 'pending', 'cancelled'
-    // UI values: 'completed', 'processing', 'cancelled'
+    // DB status → UI status mapping
     const statusMapping: Record<string, string> = {
       delivered: 'completed',
       pending: 'processing',
       cancelled: 'cancelled',
     }
 
-    // 3. Format orders for the frontend view
+    // Format orders for frontend
     const formattedOrders = allOrders.map((o) => {
       const itemsList = (o.items as any[]) || []
       const primaryItem = itemsList[0]
-      const primaryProductName = primaryItem ? (productLookup[primaryItem.product_id] || 'สินค้าทางการแพทย์') : 'ไม่มีรายการสินค้า'
+      const primaryProduct = primaryItem ? productLookup[primaryItem.product_id] : null
+      const primaryProductName = primaryProduct?.name || 'สินค้าทางการแพทย์'
 
       let computedProductName = primaryProductName
       if (itemsList.length > 1) {
-        computedProductName += ` และอื่นๆ`
+        computedProductName += ` และอีก ${itemsList.length - 1} รายการ`
       }
 
-      const totalQuantity = itemsList.reduce((acc, item) => acc + (item.qty || 0), 0)
+      const totalQuantity = itemsList.reduce((acc: number, item: any) => acc + (item.qty || 0), 0)
 
-      // Convert DB date format (YYYY-MM-DD) to a beautiful Thai display style (e.g. 22 พ.ค. 2569)
+      // Convert YYYY-MM-DD to Thai Buddhist Era display
       let displayDate = o.date
       try {
         const parts = o.date.split('-')
@@ -52,25 +178,30 @@ export default defineEventHandler(async (event) => {
             'ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.',
             'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'
           ]
-          const part0 = parts[0] || ''
-          const part1 = parts[1] || ''
-          const part2 = parts[2] || ''
-          const year = parseInt(part0) + 543 // Buddhist Era
-          const month = monthsThai[parseInt(part1) - 1] || ''
-          const day = parseInt(part2)
+          const year = parseInt(parts[0] || '0') + 543
+          const month = monthsThai[parseInt(parts[1] || '1') - 1] || ''
+          const day = parseInt(parts[2] || '1')
           displayDate = `${day} ${month} ${year}`
         }
-      } catch (err) {
-        // Fallback to raw date string if parsing fails
-      }
+      } catch (_) { /* fallback to raw date */ }
 
       return {
-        id: o.id.replace('O', 'PAI-'), // e.g. O001 -> PAI-001
+        id: o.id,
+        rawStatus: o.status,
         status: statusMapping[o.status] || o.status,
         date: displayDate,
+        rawDate: o.date,
         price: o.total,
+        shippingFee: o.shippingFee,
+        paymentMethod: o.paymentMethod,
+        shippingAddress: (o as any).shippingAddress || null,
         productName: computedProductName,
         quantity: totalQuantity,
+        items: itemsList.map((item: any) => ({
+          ...item,
+          name: productLookup[item.product_id]?.name || item.product_id,
+          category: productLookup[item.product_id]?.category || '',
+        })),
       }
     })
 
